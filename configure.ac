@@ -1,0 +1,13 @@
+AC_INIT([taquinsolve], [1.0], [me@dyl.dog])
+AM_INIT_AUTOMAKE([subdir-objects -Wall -Werror foreign])
+
+AM_PROG_AR
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([
+ Makefile
+])
+AC_OUTPUT
