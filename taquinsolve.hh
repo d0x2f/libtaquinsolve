@@ -1,1 +1,4 @@
-int taquin_solve();
+#include <string>
+#include "Solver.hh"
+
+std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, int board_size);
