@@ -1,11 +1,12 @@
-AC_INIT([taquinsolve], [1.0], [me@dyl.dog])
+AC_INIT([libtaquinsolve], [1.0], [me@dyl.dog])
 
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIRS([m4])
 
-AM_INIT_AUTOMAKE([subdir-objects -Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AM_PROG_AR
+LT_INIT
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
