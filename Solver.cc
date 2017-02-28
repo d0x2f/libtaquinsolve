@@ -17,25 +17,29 @@ std::queue<Moves> Solver::solve()
         return std::queue<Moves>();
     }
 
+    std::map< int, std::shared_ptr<Board> > open;
+    std::map<std::size_t, std::shared_ptr<Board> > open_hash;
+    std::map<std::size_t, bool > closed;
+
     //Create shared pointer to pass along
     //Scoped so it will delete
     {
         std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(this->initial_board);
-        this->open.insert(std::pair< int, std::shared_ptr<Board> >(0, initial_board));
-        this->open_hash.insert(std::pair<std::size_t, std::shared_ptr<Board> >(this->initial_board->get_state_hash(), initial_board));
+        open.insert(std::pair< int, std::shared_ptr<Board> >(0, initial_board));
+        open_hash.insert(std::pair<std::size_t, std::shared_ptr<Board> >(this->initial_board->get_state_hash(), initial_board));
     }
 
-    while(this->open.size() > 0) {
-        std::shared_ptr<Board> current = this->open.begin()->second;
+    while(!open.empty()) {
+        std::shared_ptr<Board> current = open.begin()->second;
 
         if (current->check_solved()) {
             return current->get_move_history();
         }
 
-        this->open_hash.erase(this->open_hash.find(current->get_state_hash()));
-        this->open.erase(this->open.begin());
+        open_hash.erase(open_hash.find(current->get_state_hash()));
+        open.erase(open.begin());
 
-        this->closed.insert(std::pair<std::size_t, bool>(current->get_state_hash(), true));
+        closed.insert(std::pair<std::size_t, bool>(current->get_state_hash(), true));
 
         std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
 
@@ -46,15 +50,15 @@ std::queue<Moves> Solver::solve()
         ) {
             std::shared_ptr<Board> neighbor = *it;
             std::size_t neighbor_hash = neighbor->get_state_hash();
-            if (this->closed.find(neighbor_hash) != this->closed.end()) {
+            if (closed.find(neighbor_hash) != closed.end()) {
                 continue;
             }
 
-            std::map<std::size_t, std::shared_ptr<Board> >::iterator existing_entry = this->open_hash.find(neighbor_hash);
-            if (existing_entry == this->open_hash.end()) {
-                this->open.insert(std::pair<int, std::shared_ptr<Board> >(neighbor->get_cost() + neighbor->get_heuristic(), neighbor));
-                this->open_hash.insert(std::pair<std::size_t, std::shared_ptr<Board> >(neighbor_hash, neighbor));
-                existing_entry = this->open_hash.find(neighbor_hash);
+            std::map<std::size_t, std::shared_ptr<Board> >::iterator existing_entry = open_hash.find(neighbor_hash);
+            if (existing_entry == open_hash.end()) {
+                open.insert(std::pair<int, std::shared_ptr<Board> >(neighbor->get_cost() + neighbor->get_heuristic(), neighbor));
+                open_hash.insert(std::pair<std::size_t, std::shared_ptr<Board> >(neighbor_hash, neighbor));
+                existing_entry = open_hash.find(neighbor_hash);
             } else if (current->get_cost() + 1 >= existing_entry->second->get_cost()) {
                 continue;
             }

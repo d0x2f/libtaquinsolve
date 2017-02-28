@@ -108,8 +108,9 @@ Board *Board::perform_move(Moves move)
             new_state[this->zero_position + 1] = 0;
             break;
     }
-    this->move_history.push(move);
-    return new Board(new_state, this->board_size, this->move_history);
+    std::queue<Moves> new_history = this->move_history;
+    new_history.push(move);
+    return new Board(new_state, this->board_size, new_history);
 }
 
 std::queue<Moves> Board::get_move_history()

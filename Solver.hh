@@ -17,9 +17,6 @@ namespace TaquinSolve
 
         protected:
             Board *initial_board;
-            std::map< int, std::shared_ptr<Board> > open;
-            std::map<std::size_t, std::shared_ptr<Board> > open_hash;
-            std::map<std::size_t, bool > closed;
 
             static std::vector<int> tokenise_board_string(std::string str, char sep = ' ');
     };
