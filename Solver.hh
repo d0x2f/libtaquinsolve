@@ -18,6 +18,7 @@ namespace TaquinSolve
         protected:
             Board *initial_board;
 
+            std::shared_ptr<Board> get_cheapest_board(std::map<std::size_t, std::shared_ptr<Board> > *open_set);
             static std::vector<int> tokenise_board_string(std::string str, char sep = ' ');
     };
 }

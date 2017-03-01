@@ -6,6 +6,16 @@
 
 using namespace TaquinSolve;
 
+/**
+ * Constructor.
+ * Takes on a board state, size and move history.
+ * It finds the position of 0 within the board state.
+ *
+ * @param state         An array of integers representing the board state in row major encoding.
+ * @param board_size    The width/height of the board.
+ *                      The board state must contain board_size^2 entries.
+ * @param move_history  A queue of moves taken to get to this board state.
+ */
 Board::Board(std::vector<int> state, int board_size, std::queue<Moves> move_history)
     : state(state), board_size(board_size), move_history(move_history)
 {
@@ -17,6 +27,11 @@ Board::Board(std::vector<int> state, int board_size, std::queue<Moves> move_hist
     }
 }
 
+/**
+ * Validates the current board state.
+ * Are there the right number of tiles?
+ * Are the tiles indexed sequentially?
+ */
 bool Board::validate_state()
 {
     //Ensure we have the right number of positions
@@ -45,13 +60,20 @@ bool Board::validate_state()
     return true;
 }
 
+/**
+ * Return a list of the moves that can be taken from this board state.
+ *
+ * @return A vector of possible moves.
+ */
 std::vector<Moves> Board::get_available_moves()
 {
     std::vector<Moves> output;
 
+    //Get cartesian coordinates of the zero position
     int empty_x = this->zero_position % this->board_size;
     int empty_y = this->zero_position / this->board_size;
 
+    //Check if zero is on any boundary
     if (empty_x > 0)
         output.push_back(Moves::LEFT);
 
@@ -67,6 +89,11 @@ std::vector<Moves> Board::get_available_moves()
     return output;
 }
 
+/**
+ * Checks whether the current board state is solved.
+ *
+ * @return Solved or not
+ */
 bool Board::check_solved()
 {
     int last = -1;
@@ -84,6 +111,13 @@ bool Board::check_solved()
     return true;
 }
 
+/**
+ * Perform the given move upon a copy of this board and return it.
+ *
+ * @param move The move to apply.
+ *
+ * @return A new board object with the move applied.
+ */
 Board *Board::perform_move(Moves move)
 {
     std::vector<int> new_state = this->state;
@@ -113,16 +147,33 @@ Board *Board::perform_move(Moves move)
     return new Board(new_state, this->board_size, new_history);
 }
 
+/**
+ * Fetch the move history.
+ *
+ * @return Move history.
+ */
 std::queue<Moves> Board::get_move_history()
 {
     return this->move_history;
 }
 
+/**
+ * Replace the move history of this board state with the given one.
+ * This is used in the search algorithm when the same board state is found by a more efficient route.
+ *
+ * @param move_history A new move history queue.
+ */
 void Board::replace_move_history(std::queue<Moves> move_history)
 {
     this->move_history = move_history;
 }
 
+/**
+ * Create a unique hash of the board state to act as a simple
+ * identifier.
+ *
+ * @return A unique hash of the board state.
+ */
 std::size_t Board::get_state_hash()
 {
     std::string state_representation;
@@ -136,11 +187,22 @@ std::size_t Board::get_state_hash()
     return std::hash<std::string>{}(state_representation);
 }
 
+/**
+ * Get the cost spent reaching this board state.
+ * Consider one move as one cost unit.
+ *
+ * @return The number of moves taken.
+ */
 int Board::get_cost()
 {
     return this->state.size();
 }
 
+/**
+ * Returns a simple heuristic which measures how many tiles are currently misplaced.u78olkk
+ *
+ * @return A heuristic value.
+ */
 int Board::get_heuristic()
 {
     int misplaced = 0;
