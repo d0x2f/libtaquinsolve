@@ -1,6 +1,5 @@
-#include <iostream>
-#include <sstream>
 #include <algorithm>
+#include <unordered_set>
 
 #include "Solver.hh"
 
@@ -13,9 +12,9 @@ using namespace TaquinSolve;
  * @param board_string  A string representing a puzzle e.g. "0 2 3 1".
  * @param board_size    The size of the given puzzle board e.g 2 for the example above.
  */
-Solver::Solver(std::string board_string, int board_size)
+Solver::Solver(std::vector<int> board, int board_size)
 {
-    this->initial_board = new Board(Solver::tokenise_board_string(board_string), board_size);
+    this->initial_board = new Board(board, board_size);
 }
 
 /**
@@ -36,7 +35,7 @@ std::queue<Moves> Solver::solve()
     std::map<std::size_t, std::shared_ptr<Board> > open;
 
     //Closed set of already explored states
-    std::map<std::size_t, bool > closed;
+    std::unordered_set<std::size_t> closed;
 
     //Create shared pointer to pass along
     //Scoped so it will delete
@@ -56,10 +55,10 @@ std::queue<Moves> Solver::solve()
         }
 
         //Remove from the open set (since it's now explored)
-        open.erase(open.find(current->get_state_hash()));
+        open.erase(current->get_state_hash());
 
         //And so add it to the closed set
-        closed.insert(std::pair<std::size_t, bool>(current->get_state_hash(), true));
+        closed.insert(current->get_state_hash());
 
         //Find the neighbors by applying each possible move
         std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
@@ -84,12 +83,11 @@ std::queue<Moves> Solver::solve()
             if (existing_entry == open.end()) {
                 open.insert(std::pair<std::size_t, std::shared_ptr<Board> >(neighbor_hash, neighbor));
                 existing_entry = open.find(neighbor_hash);
-            } else if (current->get_cost() + 1 >= existing_entry->second->get_cost()) {
-                continue;
+            } else if (neighbor->get_cost() < existing_entry->second->get_cost()) {
+                //Replace the existing board by replacing it's move history.
+                existing_entry->second->replace_move_history(neighbor->get_move_history());
             }
 
-            //Replace the existing board by replacing it's move history.
-            existing_entry->second->replace_move_history(neighbor->get_move_history());
         }
     }
 
@@ -105,19 +103,19 @@ std::queue<Moves> Solver::solve()
 std::shared_ptr<Board> Solver::get_cheapest_board(std::map<std::size_t, std::shared_ptr<Board> > *open_set)
 {
     std::map<std::size_t, std::shared_ptr<Board> >::iterator it = open_set->begin();
+
     int lowest_found = it->second->get_cost() + it->second->get_heuristic();
     std::shared_ptr<Board> lowest_found_ref = it->second;
     int cost;
 
     it++;
 
-    while (it != open_set->end()) {
+    for (;it != open_set->end(); it++) {
         cost = it->second->get_cost() + it->second->get_heuristic();
         if (cost < lowest_found) {
             lowest_found = cost;
             lowest_found_ref = it->second;
         }
-        it++;
     }
 
     return lowest_found_ref;
@@ -137,23 +135,4 @@ std::vector< std::shared_ptr<Board> > Solver::perform_moves(Board *board, std::v
     }
 
     return results;
-}
-
-/**
- * Take a board string like "0 1 3 2" and convert it into an int vector.
- *
- * @param str The board string representation.
- * @param sep The seperator used in the given string.
- */
-std::vector<int> Solver::tokenise_board_string(std::string str, char sep)
-{
-    std::vector<int> ret;
-
-    std::istringstream stm(str);
-    std::string token;
-    while( std::getline( stm, token, sep ) ) {
-        ret.push_back(std::stoi(token));
-    }
-
-    return ret;
 }
