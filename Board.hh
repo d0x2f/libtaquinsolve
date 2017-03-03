@@ -21,7 +21,7 @@ namespace TaquinSolve
     class Board
     {
         public:
-            Board(std::vector<int> state, int board_size, std::queue<Moves> move_history = std::queue<Moves>());
+            Board(std::vector<std::size_t> state, std::size_t board_size, std::queue<Moves> move_history = std::queue<Moves>());
             Board(const Board&) = delete;
             ~Board() = default;
             Board& operator=(const Board&) = delete;
@@ -38,19 +38,19 @@ namespace TaquinSolve
             std::vector<Moves> get_available_moves();
             std::queue<Moves> get_move_history();
             std::size_t get_state_hash();
-            int get_cost();
-            int get_heuristic();
+            std::size_t get_cost();
+            std::size_t get_heuristic();
 
         protected:
             //An int vector representation of the state
-            std::vector<int> state;
+            std::vector<std::size_t> state;
 
             //The size of the board
-            int board_size = 0;
+            std::size_t board_size = 0;
 
             //The current position of the empty tile
             //(represented by 0)
-            int zero_position = 0;
+            std::size_t zero_position = 0;
 
             //A queue structure that contains all the moves taken to get to this board state
             std::queue<Moves> move_history;

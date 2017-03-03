@@ -12,7 +12,7 @@ using namespace TaquinSolve;
  * @param board_string  A string representing a puzzle e.g. "0 2 3 1".
  * @param board_size    The size of the given puzzle board e.g 2 for the example above.
  */
-Solver::Solver(std::vector<int> board, int board_size)
+Solver::Solver(std::vector<std::size_t> board, std::size_t board_size)
 {
     this->initial_board = new Board(board, board_size);
 }

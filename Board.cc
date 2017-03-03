@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <cstddef>
 
 #include "Board.hh"
 
@@ -16,11 +17,11 @@ using namespace TaquinSolve;
  *                      The board state must contain board_size^2 entries.
  * @param move_history  A queue of moves taken to get to this board state.
  */
-Board::Board(std::vector<int> state, int board_size, std::queue<Moves> move_history)
+Board::Board(std::vector<std::size_t> state, std::size_t board_size, std::queue<Moves> move_history)
     : state(state), board_size(board_size), move_history(move_history)
 {
     //Find where the empty cell is
-    for (int i = 0; i < this->state.size(); i++) {
+    for (std::size_t i = 0; i < this->state.size(); i++) {
         if (this->state[i] == 0) {
             this->zero_position = i;
         }
@@ -41,12 +42,12 @@ bool Board::validate_state()
     }
 
     //Sort the indices and make sure they are a sequence from 0.
-    std::vector<int> sorted_state = this->state;
+    std::vector<std::size_t> sorted_state = this->state;
     std::sort(sorted_state.begin(), sorted_state.end());
 
-    int last = -1;
+    std::size_t last = -1;
     for (
-        std::vector<int>::iterator it = sorted_state.begin();
+        std::vector<std::size_t>::iterator it = sorted_state.begin();
         it != sorted_state.end();
         ++it
     ) {
@@ -70,8 +71,8 @@ std::vector<Moves> Board::get_available_moves()
     std::vector<Moves> output;
 
     //Get cartesian coordinates of the zero position
-    int empty_x = this->zero_position % this->board_size;
-    int empty_y = this->zero_position / this->board_size;
+    std::size_t empty_x = this->zero_position % this->board_size;
+    std::size_t empty_y = this->zero_position / this->board_size;
 
     //Check if zero is on any boundary
     if (empty_x > 0)
@@ -96,9 +97,9 @@ std::vector<Moves> Board::get_available_moves()
  */
 bool Board::check_solved()
 {
-    int last = -1;
+    std::size_t last = -1;
     for (
-        std::vector<int>::iterator it = this->state.begin();
+        std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it
     ) {
@@ -120,7 +121,7 @@ bool Board::check_solved()
  */
 Board *Board::perform_move(Moves move)
 {
-    std::vector<int> new_state = this->state;
+    std::vector<std::size_t> new_state = this->state;
     switch (move) {
         case Moves::UP:
             new_state[this->zero_position] = new_state[this->zero_position - this->board_size];
@@ -178,7 +179,7 @@ std::size_t Board::get_state_hash()
 {
     std::string state_representation;
     for (
-        std::vector< int >::iterator it = this->state.begin();
+        std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it
     ) {
@@ -193,22 +194,22 @@ std::size_t Board::get_state_hash()
  *
  * @return The number of moves taken.
  */
-int Board::get_cost()
+std::size_t Board::get_cost()
 {
-    return this->state.size();
+    return this->move_history.size();
 }
 
 /**
- * Returns a simple heuristic which measures how many tiles are currently misplaced.u78olkk
+ * Returns a simple heuristic which measures how many tiles are currently misplaced.
  *
  * @return A heuristic value.
  */
-int Board::get_heuristic()
+std::size_t Board::get_heuristic()
 {
-    int misplaced = 0;
-    int i = 0;
+    std::size_t misplaced = 0;
+    std::size_t i = 0;
     for (
-        std::vector<int>::iterator it = this->state.begin();
+        std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it
     ) {

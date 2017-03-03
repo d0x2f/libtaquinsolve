@@ -11,11 +11,11 @@ namespace TaquinSolve
     class Solver
     {
         public:
-            Solver(std::vector<int> board, int board_size);
+            Solver(std::vector<std::size_t> board, std::size_t board_size);
             std::queue<Moves> solve();
             std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
 
-            static std::vector<int> tokenise_board_string(std::string str, char sep = ' ');
+            static std::vector<std::size_t> tokenise_board_string(std::string str, char sep = ' ');
 
         protected:
             Board *initial_board;

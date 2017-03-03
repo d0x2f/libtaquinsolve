@@ -11,13 +11,13 @@
  *
  * @return A random solvable board in string representation.
  */
-std::string taquin_generate_string(int board_size)
+std::string taquin_generate_string(std::size_t board_size)
 {
-    std::vector<int> board = taquin_generate_vector(board_size);
+    std::vector<std::size_t> board = taquin_generate_vector(board_size);
 
     std::string output;
 
-    std::vector<int>::iterator it = board.begin();
+    std::vector<std::size_t>::iterator it = board.begin();
     for(;it != board.end(); it++) {
         output += std::to_string(*it) + ' ';
     }
@@ -31,13 +31,13 @@ std::string taquin_generate_string(int board_size)
  *
  * @return A random solvable board in vector representation.
  */
-std::vector<int> taquin_generate_vector(int board_size)
+std::vector<std::size_t> taquin_generate_vector(std::size_t board_size)
 {
     //Create a uniform board of the required size
-    int len = board_size * board_size;
-    std::vector<int> board;
+    std::size_t len = board_size * board_size;
+    std::vector<std::size_t> board;
 
-    for (int i=0; i<len; i++) {
+    for (std::size_t i=0; i<len; i++) {
         board.push_back(i);
     }
 
@@ -61,7 +61,7 @@ std::vector<int> taquin_generate_vector(int board_size)
  * @param board         The board state represented as a string.
  * @param board_size    The width/height of the board.
  */
-bool taquin_check_solvable(std::string board_string, int board_size)
+bool taquin_check_solvable(std::string board_string, std::size_t board_size)
 {
     return taquin_check_solvable(taquin_tokenise_board_string(board_string), board_size);
 }
@@ -74,13 +74,13 @@ bool taquin_check_solvable(std::string board_string, int board_size)
  *
  * @return True if the board is solvable.
  */
-bool taquin_check_solvable(std::vector<int> board, int board_size)
+bool taquin_check_solvable(std::vector<std::size_t> board, std::size_t board_size)
 {
-    int len = board_size * board_size;
-    int subject;
-    int inversion_count = 0;
-    int zero_position = 0;
-    for (int i=0; i<len; i++) {
+    std::size_t len = board_size * board_size;
+    std::size_t subject;
+    std::size_t inversion_count = 0;
+    std::size_t zero_position = 0;
+    for (std::size_t i=0; i<len; i++) {
         subject = board.at(i);
 
         if (subject == 0) {
@@ -88,7 +88,7 @@ bool taquin_check_solvable(std::vector<int> board, int board_size)
             continue;
         }
 
-        for (int j=i+1; j<len; j++) {
+        for (std::size_t j=i+1; j<len; j++) {
             inversion_count += (subject > board.at(j));
         }
     }
@@ -108,14 +108,17 @@ bool taquin_check_solvable(std::vector<int> board, int board_size)
  *
  * @return A board state represented as a vector.
  */
-std::vector<int> taquin_tokenise_board_string(std::string str, char sep)
+std::vector<std::size_t> taquin_tokenise_board_string(std::string str, char sep)
 {
-    std::vector<int> ret;
+    std::vector<std::size_t> ret;
 
     std::istringstream stm(str);
     std::string token;
     while( std::getline( stm, token, sep ) ) {
-        ret.push_back(std::stoi(token));
+        std::stringstream sstream(token);
+        size_t result;
+        sstream >> result;
+        ret.push_back(result);
     }
 
     return ret;
@@ -129,7 +132,7 @@ std::vector<int> taquin_tokenise_board_string(std::string str, char sep)
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, int board_size)
+std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, std::size_t board_size)
 {
     return taquin_solve(taquin_tokenise_board_string(board_string), board_size);
 }
@@ -142,7 +145,7 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, int board_
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::vector<int> board, int board_size)
+std::queue<TaquinSolve::Moves> taquin_solve(std::vector<std::size_t> board, std::size_t board_size)
 {
     TaquinSolve::Solver solver(board, board_size);
     return solver.solve();
