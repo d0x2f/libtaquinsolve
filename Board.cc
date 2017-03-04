@@ -196,7 +196,7 @@ std::string Board::get_state_hash()
         it != this->state.end();
         ++it
     ) {
-        state_representation += std::to_string(*it) + ":";
+        state_representation += std::to_string(*it) + ':';
     }
     return state_representation;
 }
@@ -234,7 +234,7 @@ size_t Board::get_heuristic()
             continue;
         }
 
-        manhattan_sum += abs(((i+1) / this->board_size) - (j / this->board_size)) + abs(((i+1) % this->board_size) - (j % this->board_size));
+        manhattan_sum += abs((i / this->board_size) - ((j-1) / this->board_size)) + abs((i % this->board_size) - ((j-1) % this->board_size));
     }
 
     this->heuristic = manhattan_sum;

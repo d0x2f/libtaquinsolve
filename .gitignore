@@ -45,3 +45,4 @@ configure
 ar-lib
 build/
 m4/
+test

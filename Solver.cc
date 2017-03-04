@@ -59,7 +59,7 @@ std::queue<Moves> Solver::solve()
         closed.insert(current->get_state_hash());
 
         //Remove from the open set (since it's now explored)
-        open.erase(current->get_state_hash());
+        open.erase(open.find(current->get_state_hash()));
 
         //Find the neighbors by applying each possible move
         std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
@@ -82,13 +82,11 @@ std::queue<Moves> Solver::solve()
             //Otherwise replace the existing one with this one if it's cost is better.
             std::map<std::string, std::shared_ptr<Board> >::iterator existing_entry = open.find(neighbor_hash);
             if (existing_entry == open.end()) {
-                existing_entry = open.insert(std::pair<std::string, std::shared_ptr<Board> >(neighbor_hash, neighbor)).first;
-            } else if (neighbor->get_cost() > existing_entry->second->get_cost()) {
-                continue;
+                open.insert(std::pair<std::string, std::shared_ptr<Board> >(neighbor_hash, neighbor));
+            } else if (neighbor->get_cost() < existing_entry->second->get_cost()) {
+                //Replace the existing board by replacing it's move history.
+                existing_entry->second->replace_move_history(neighbor->get_move_history());
             }
-
-            //Replace the existing board by replacing it's move history.
-            existing_entry->second->replace_move_history(neighbor->get_move_history());
         }
     }
 
