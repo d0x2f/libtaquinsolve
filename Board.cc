@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <string>
 #include <algorithm>
 #include <cstddef>
 
@@ -17,11 +18,11 @@ using namespace TaquinSolve;
  *                      The board state must contain board_size^2 entries.
  * @param move_history  A queue of moves taken to get to this board state.
  */
-Board::Board(std::vector<std::size_t> state, std::size_t board_size, std::queue<Moves> move_history)
+Board::Board(std::vector<size_t> state, size_t board_size, std::queue<Moves> move_history)
     : state(state), board_size(board_size), move_history(move_history)
 {
     //Find where the empty cell is
-    for (std::size_t i = 0; i < this->state.size(); i++) {
+    for (size_t i = 0; i < this->state.size(); i++) {
         if (this->state[i] == 0) {
             this->zero_position = i;
         }
@@ -42,12 +43,12 @@ bool Board::validate_state()
     }
 
     //Sort the indices and make sure they are a sequence from 0.
-    std::vector<std::size_t> sorted_state = this->state;
+    std::vector<size_t> sorted_state = this->state;
     std::sort(sorted_state.begin(), sorted_state.end());
 
-    std::size_t last = -1;
+    size_t last = -1;
     for (
-        std::vector<std::size_t>::iterator it = sorted_state.begin();
+        std::vector<size_t>::iterator it = sorted_state.begin();
         it != sorted_state.end();
         ++it
     ) {
@@ -68,11 +69,15 @@ bool Board::validate_state()
  */
 std::vector<Moves> Board::get_available_moves()
 {
+    if (this->move_history.size() > 100) {
+        return std::vector<Moves>();
+    }
+
     std::vector<Moves> output;
 
     //Get cartesian coordinates of the zero position
-    std::size_t empty_x = this->zero_position % this->board_size;
-    std::size_t empty_y = this->zero_position / this->board_size;
+    size_t empty_x = this->zero_position % this->board_size;
+    size_t empty_y = this->zero_position / this->board_size;
 
     //Check if zero is on any boundary
     if (empty_x > 0)
@@ -97,16 +102,15 @@ std::vector<Moves> Board::get_available_moves()
  */
 bool Board::check_solved()
 {
-    std::size_t last = -1;
+    size_t compare = 1;
     for (
-        std::vector<std::size_t>::iterator it = this->state.begin();
-        it != this->state.end();
+        std::vector<size_t>::iterator it = this->state.begin();
+        it != this->state.end()-1;
         ++it
     ) {
-        if ((*it) != last+1) {
+        if ((*it) != compare++) {
             return false;
         }
-        last = (*it);
     }
 
     return true;
@@ -121,7 +125,7 @@ bool Board::check_solved()
  */
 Board *Board::perform_move(Moves move)
 {
-    std::vector<std::size_t> new_state = this->state;
+    std::vector<size_t> new_state = this->state;
     switch (move) {
         case Moves::UP:
             new_state[this->zero_position] = new_state[this->zero_position - this->board_size];
@@ -143,8 +147,10 @@ Board *Board::perform_move(Moves move)
             new_state[this->zero_position + 1] = 0;
             break;
     }
-    std::queue<Moves> new_history = this->move_history;
+    std::queue<Moves> new_history;
+    new_history = this->move_history;
     new_history.push(move);
+
     return new Board(new_state, this->board_size, new_history);
 }
 
@@ -167,6 +173,13 @@ std::queue<Moves> Board::get_move_history()
 void Board::replace_move_history(std::queue<Moves> move_history)
 {
     this->move_history = move_history;
+    this->heuristic_dirty = true;
+}
+
+
+std::vector<size_t> Board::get_state()
+{
+    return this->state;
 }
 
 /**
@@ -175,17 +188,17 @@ void Board::replace_move_history(std::queue<Moves> move_history)
  *
  * @return A unique hash of the board state.
  */
-std::size_t Board::get_state_hash()
+std::string Board::get_state_hash()
 {
     std::string state_representation;
     for (
-        std::vector<std::size_t>::iterator it = this->state.begin();
+        std::vector<size_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it
     ) {
         state_representation += std::to_string(*it) + ":";
     }
-    return std::hash<std::string>{}(state_representation);
+    return state_representation;
 }
 
 /**
@@ -194,7 +207,7 @@ std::size_t Board::get_state_hash()
  *
  * @return The number of moves taken.
  */
-std::size_t Board::get_cost()
+size_t Board::get_cost()
 {
     return this->move_history.size();
 }
@@ -204,20 +217,28 @@ std::size_t Board::get_cost()
  *
  * @return A heuristic value.
  */
-std::size_t Board::get_heuristic()
+size_t Board::get_heuristic()
 {
-    std::size_t misplaced = 0;
-    std::size_t i = 0;
-    for (
-        std::vector<std::size_t>::iterator it = this->state.begin();
-        it != this->state.end();
-        ++it
-    ) {
-        if ((*it) != i) {
-            misplaced++;
-        }
-        i++;
+    if (!this->heuristic_dirty) {
+        return this->heuristic;
     }
 
-    return misplaced;
+    size_t manhattan_sum = 0;
+    for (
+        size_t i = 0;
+        i < this->state.size();
+        i++
+    ) {
+        size_t j = this->state.at(i);
+        if (j == 0) {
+            continue;
+        }
+
+        manhattan_sum += abs(((i+1) / this->board_size) - (j / this->board_size)) + abs(((i+1) % this->board_size) - (j % this->board_size));
+    }
+
+    this->heuristic = manhattan_sum;
+    this->heuristic_dirty = false;
+
+    return manhattan_sum;
 }
