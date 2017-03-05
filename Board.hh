@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <queue>
 #include <string>
@@ -31,7 +33,7 @@ namespace TaquinSolve
             void replace_move_history(std::queue<Moves> move_history);
 
             //Validate
-            bool validate_state();
+            void validate_state();
             bool check_solved();
 
             //Read

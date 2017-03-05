@@ -1,4 +1,3 @@
-#include <iostream>
 #include <algorithm>
 #include <unordered_set>
 
@@ -23,14 +22,11 @@ Solver::Solver(std::vector<size_t> board, size_t board_size)
  * Uses an A* search algorithm.
  *
  * @return  A queue structure representing moves taken to reach the solution.
- *          If the puzzle is unsolveable and empty queue is returned.
  */
 std::queue<Moves> Solver::solve()
 {
     //Ensure the given board state is valid
-    if (!this->initial_board->validate_state()) {
-        return std::queue<Moves>();
-    }
+    this->initial_board->validate_state();
 
     //Open set of unexplored board states
     std::map<std::string, std::shared_ptr<Board> > open;
@@ -91,7 +87,7 @@ std::queue<Moves> Solver::solve()
     }
 
     //The puzzle is unsolvable
-    return std::queue<Moves>();
+    throw std::string("The puzzle in unsolvable");
 }
 
 /**
@@ -101,6 +97,10 @@ std::queue<Moves> Solver::solve()
  */
 std::shared_ptr<Board> Solver::get_cheapest_board(std::map<std::string, std::shared_ptr<Board> > *open_set)
 {
+    if (open_set->size() < 1) {
+        throw std::string("No elements in open set");
+    }
+
     std::map<std::string, std::shared_ptr<Board> >::iterator it = open_set->begin();
 
     int lowest_found = it->second->get_cost() + it->second->get_heuristic();

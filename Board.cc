@@ -1,10 +1,9 @@
-#include <iostream>
-#include <cmath>
 #include <string>
 #include <algorithm>
 #include <cstddef>
 
 #include "Board.hh"
+#include "taquinsolve.hh"
 
 using namespace TaquinSolve;
 
@@ -34,12 +33,11 @@ Board::Board(std::vector<size_t> state, size_t board_size, std::queue<Moves> mov
  * Are there the right number of tiles?
  * Are the tiles indexed sequentially?
  */
-bool Board::validate_state()
+void Board::validate_state()
 {
     //Ensure we have the right number of positions
-    if (this->state.size() != std::pow(this->board_size, 2)) {
-        std::cerr << "not enough tiles to fill board: " << this->state.size() << "/" << std::pow(this->board_size, 2) << std::endl;
-        return false;
+    if (this->state.size() != this->board_size * this->board_size) {
+        throw std::string("Not enough tiles to fill board: ") + std::to_string(this->state.size()) + "/" + std::to_string(this->board_size * this->board_size);
     }
 
     //Sort the indices and make sure they are a sequence from 0.
@@ -53,13 +51,16 @@ bool Board::validate_state()
         ++it
     ) {
         if ((*it) != last+1) {
-            std::cerr << "Improper sequence given, missing: " << last+1 << std::endl;
-            return false;
+            throw std::string("Improper sequence given, missing: ") + std::to_string(last+1);
         }
         last = (*it);
     }
 
-    return true;
+    if (!taquin_check_solvable(this->state, this->board_size)) {
+        throw std::string("Board state is unsolvable");
+    }
+
+    return;
 }
 
 /**

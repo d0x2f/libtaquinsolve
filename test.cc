@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 
 #include "taquinsolve.hh"
 
@@ -8,7 +8,9 @@ using namespace TaquinSolve;
 
 int main (int argc, char **argv)
 {
-    srand (time(NULL));
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    srand (((unsigned long long)time.tv_sec * 1000000) + time.tv_usec);
 
     /******************************
      *  BOARD SIZE 3

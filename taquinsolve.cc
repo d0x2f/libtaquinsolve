@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include "taquinsolve.hh"
 
 /**
@@ -106,7 +104,7 @@ bool taquin_check_solvable(std::vector<size_t> board, size_t board_size)
  */
 size_t taquin_get_inversion_count(std::vector<size_t> board, size_t board_size)
 {
-    size_t len = board_size * board_size;
+    size_t len = board.size();
     size_t inversion_count = 0;
     for (size_t i=0; i<len; i++) {
         for (size_t j=i+1; j<len; j++) {
