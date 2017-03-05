@@ -7,32 +7,25 @@
 using namespace TaquinSolve;
 
 /**
- * Constructor.
- * Takes a string representing a new puzzle and it's intended size.
- *
- * @param board_string  A string representing a puzzle e.g. "2 3 1 0".
- * @param board_size    The size of the given puzzle board e.g 2 for the example above.
- */
-IDASolver::IDASolver(std::vector<size_t> board, size_t board_size)
-{
-    this->initial_board = std::shared_ptr<Board>(new Board(board, board_size));
-}
-
-/**
  * Solve the board state given to this object.
- * Uses an A* search algorithm.
+ * Uses an Iterative Deepening A* search algorithm.
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-std::queue<Moves> IDASolver::solve()
+std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
 {
-    //Ensure the given board state is valid
-    this->initial_board->validate_state();
+    //Since we're starting a new solve, clear the visited cache.
+    this->visited_cache.clear();
 
-    size_t bound = this->initial_board->get_heuristic();
+    std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size));
+
+    //Ensure the given board state is valid
+    initial_board->validate_state();
+
+    size_t bound = initial_board->get_heuristic();
 
     while (true) {
-        SearchResult result = this->search(this->initial_board, bound);
+        SearchResult result = this->search(initial_board, bound);
         if (result.solved) {
             return result.board->get_move_history();
         }
@@ -56,6 +49,8 @@ std::queue<Moves> IDASolver::solve()
 SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
 {
     size_t board_cost = board->get_cost() + board->get_heuristic();
+
+    //If this board cost is above the bound return it.
     if (board_cost > bound) {
         return SearchResult(
             false,
@@ -64,6 +59,7 @@ SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
         );
     }
 
+    //If this board is solved return it.
     if (board->check_solved()) {
         return SearchResult(
             true,
@@ -75,13 +71,13 @@ SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
     //Find the neighbors by applying each possible move
     std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(board.get(), board->get_available_moves());
 
+    //Find the neighbor with the minimum search() value
     SearchResult min_result(
         false,
         std::numeric_limits<std::size_t>::max(),
         board
     );
 
-    //Check each neighbor for new states or more efficient cost
     for (
         std::vector< std::shared_ptr<Board> >::iterator it = neighbors.begin();
         it != neighbors.end();
@@ -89,14 +85,19 @@ SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
     ) {
         std::shared_ptr<Board> neighbor = *it;
         SearchResult neighbor_result = this->search(neighbor, bound);
+
+        //If this neighbor produced a solved state, return it.
         if (neighbor_result.solved) {
             return neighbor_result;
         }
 
+        //Check if this neighbor is the new minimum
         if (neighbor_result.cost < min_result.cost) {
             min_result = neighbor_result;
         }
     }
+
+    //Return the minimum found result.
     return min_result;
 }
 

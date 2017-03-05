@@ -6,27 +6,17 @@
 using namespace TaquinSolve;
 
 /**
- * Constructor.
- * Takes a string representing a new puzzle and it's intended size.
- *
- * @param board_string  A string representing a puzzle e.g. "2 3 1 0".
- * @param board_size    The size of the given puzzle board e.g 2 for the example above.
- */
-ASolver::ASolver(std::vector<size_t> board, size_t board_size)
-{
-    this->initial_board = new Board(board, board_size);
-}
-
-/**
  * Solve the board state given to this object.
  * Uses an A* search algorithm.
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-std::queue<Moves> ASolver::solve()
+std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
 {
+    std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size));
+
     //Ensure the given board state is valid
-    this->initial_board->validate_state();
+    initial_board->validate_state();
 
     //Open set of unexplored board states
     std::map<std::string, std::shared_ptr<Board> > open;
@@ -34,12 +24,7 @@ std::queue<Moves> ASolver::solve()
     //Closed set of already explored states
     std::unordered_set<std::string> closed;
 
-    //Create shared pointer to pass along
-    //Scoped so it will delete
-    {
-        std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(this->initial_board);
-        open.insert(std::pair<std::string, std::shared_ptr<Board> >(this->initial_board->get_state_hash(), initial_board));
-    }
+    open.insert(std::pair<std::string, std::shared_ptr<Board> >(initial_board->get_state_hash(), initial_board));
 
     //Continue to check open states until there are none left
     while(!open.empty()) {

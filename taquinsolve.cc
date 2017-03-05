@@ -164,8 +164,8 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, size_t boa
  */
 std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t board_size)
 {
-    TaquinSolve::IDASolver solver(board, board_size);
-    return solver.solve();
+    TaquinSolve::IDASolver solver;
+    return solver.solve(board, board_size);
 }
 
 /**
