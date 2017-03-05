@@ -1,7 +1,10 @@
 #pragma once
 
 #include <string>
-#include "Solver.hh"
+#include <vector>
+#include <queue>
+
+#include "Board.hh"
 
 std::vector<size_t> taquin_tokenise_board_string(std::string str, char sep = ' ');
 

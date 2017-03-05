@@ -46,7 +46,7 @@ int main (int argc, char **argv)
     std::cout << "\tMoves: " << taquin_solve(random_puzzle, board_size).size() << std::endl;
     std::cout << "Done!" << std::endl << std::endl;
 
-    return 0;
+    //return 0;
     /******************************
      *  BOARD SIZE 4
      ******************************/

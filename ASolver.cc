@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-#include "Solver.hh"
+#include "ASolver.hh"
 
 using namespace TaquinSolve;
 
@@ -12,7 +12,7 @@ using namespace TaquinSolve;
  * @param board_string  A string representing a puzzle e.g. "2 3 1 0".
  * @param board_size    The size of the given puzzle board e.g 2 for the example above.
  */
-Solver::Solver(std::vector<size_t> board, size_t board_size)
+ASolver::ASolver(std::vector<size_t> board, size_t board_size)
 {
     this->initial_board = new Board(board, board_size);
 }
@@ -23,7 +23,7 @@ Solver::Solver(std::vector<size_t> board, size_t board_size)
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-std::queue<Moves> Solver::solve()
+std::queue<Moves> ASolver::solve()
 {
     //Ensure the given board state is valid
     this->initial_board->validate_state();
@@ -95,7 +95,7 @@ std::queue<Moves> Solver::solve()
  *
  * @return A pointer to the cheapest board.
  */
-std::shared_ptr<Board> Solver::get_cheapest_board(std::map<std::string, std::shared_ptr<Board> > *open_set)
+std::shared_ptr<Board> ASolver::get_cheapest_board(std::map<std::string, std::shared_ptr<Board> > *open_set)
 {
     if (open_set->size() < 1) {
         throw std::string("No elements in open set");
@@ -126,7 +126,7 @@ std::shared_ptr<Board> Solver::get_cheapest_board(std::map<std::string, std::sha
  * @param board The reference board state.
  * @paran moves A list of moves to apply.
  */
-std::vector< std::shared_ptr<Board> > Solver::perform_moves(Board *board, std::vector<Moves> moves) {
+std::vector< std::shared_ptr<Board> > ASolver::perform_moves(Board *board, std::vector<Moves> moves) {
     std::vector< std::shared_ptr<Board> > results;
 
     for (Moves move : moves) {

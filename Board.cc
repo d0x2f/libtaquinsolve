@@ -70,10 +70,6 @@ void Board::validate_state()
  */
 std::vector<Moves> Board::get_available_moves()
 {
-    if (this->move_history.size() > 100) {
-        return std::vector<Moves>();
-    }
-
     std::vector<Moves> output;
 
     //Get cartesian coordinates of the zero position
