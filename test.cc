@@ -8,6 +8,11 @@ using namespace TaquinSolve;
 
 int main (int argc, char **argv)
 {
+    /*std::string group_goal = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0";
+    std::vector<size_t> group_tiles = {1,2,3,4,5,6,7};
+    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4);
+    return 0;*/
+
     struct timeval time;
     gettimeofday(&time, NULL);
     srand (((unsigned long long)time.tv_sec * 1000000) + time.tv_usec);

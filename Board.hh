@@ -29,7 +29,7 @@ namespace TaquinSolve
             Board& operator=(const Board&) = delete;
 
             //Modify
-            Board *perform_move(Moves move);
+            virtual Board *perform_move(Moves move);
             void replace_move_history(std::queue<Moves> move_history);
 
             //Validate
@@ -40,7 +40,7 @@ namespace TaquinSolve
             std::vector<Moves> get_available_moves();
             std::queue<Moves> get_move_history();
             std::vector<size_t> get_state();
-            size_t get_state_hash();
+            virtual size_t get_state_hash();
             size_t get_cost();
             size_t get_heuristic();
 

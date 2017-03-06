@@ -4,6 +4,7 @@
 
 #include "taquinsolve.hh"
 #include "IDASolver.hh"
+#include "BFSDatabaseGenerator.hh"
 
 /**
  * Generate a solvable puzzle with the given board size.
@@ -166,6 +167,19 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t bo
 {
     TaquinSolve::IDASolver solver;
     return solver.solve(board, board_size);
+}
+
+/**
+ * Generate a pattern database based on the given goal using the given tile group.
+ *
+ * @param goal_board    A goal board represented as a vector.
+ * @param group_tiles   The tiles to consider in this database.
+ * @param board_size    The size of the given goal board
+ */
+void generate_pattern_database(std::vector<size_t> goal_board, std::vector<size_t> group_tiles, size_t board_size)
+{
+    TaquinSolve::BFSDatabaseGenerator generator;
+    generator.generate(goal_board, group_tiles, board_size);
 }
 
 /**
