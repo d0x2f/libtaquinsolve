@@ -185,17 +185,17 @@ std::vector<size_t> Board::get_state()
  *
  * @return A unique hash of the board state.
  */
-std::string Board::get_state_hash()
+size_t Board::get_state_hash()
 {
     std::string state_representation;
     for (
-        std::vector<size_t>::iterator it = this->state.begin();
+        std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it
     ) {
-        state_representation += std::to_string(*it) + ':';
+        state_representation += std::to_string(*it) + ":";
     }
-    return state_representation;
+    return std::hash<std::string>{}(state_representation);
 }
 
 /**

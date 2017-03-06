@@ -28,6 +28,6 @@ namespace TaquinSolve
             SearchResult search(std::shared_ptr<Board> board, size_t bound);
             std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
         protected:
-            std::map<std::string, size_t> visited_cache;
+            std::map<size_t, size_t> visited_cache;
     };
 }

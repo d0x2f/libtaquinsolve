@@ -40,7 +40,7 @@ namespace TaquinSolve
             std::vector<Moves> get_available_moves();
             std::queue<Moves> get_move_history();
             std::vector<size_t> get_state();
-            std::string get_state_hash();
+            size_t get_state_hash();
             size_t get_cost();
             size_t get_heuristic();
 

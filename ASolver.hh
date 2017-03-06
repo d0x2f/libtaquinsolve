@@ -17,6 +17,6 @@ namespace TaquinSolve
             std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
 
         protected:
-            std::shared_ptr<Board> get_cheapest_board(std::map<std::string, std::shared_ptr<Board> > *open_set);
+            std::shared_ptr<Board> get_cheapest_board(std::map<size_t, std::shared_ptr<Board> > *open_set);
     };
 }

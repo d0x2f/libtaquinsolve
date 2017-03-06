@@ -33,7 +33,6 @@ std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
             throw std::string("Puzzle is unsolvable.");
         }
 
-        //this->visited_cache.clear();
         bound = result.cost;
     }
 }
@@ -74,7 +73,7 @@ SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
     //Find the neighbor with the minimum search() value
     SearchResult min_result(
         false,
-        std::numeric_limits<std::size_t>::max(),
+        std::numeric_limits<size_t>::max(),
         board
     );
 
@@ -112,7 +111,7 @@ std::vector< std::shared_ptr<Board> > IDASolver::perform_moves(Board *board, std
 
     for (Moves move : moves) {
         std::shared_ptr<Board> new_board = std::shared_ptr<Board>(board->perform_move(move));
-        std::map<std::string, size_t>::iterator it = this->visited_cache.find(new_board->get_state_hash());
+        std::map<size_t, size_t>::iterator it = this->visited_cache.find(new_board->get_state_hash());
         size_t new_cost = new_board->get_cost() + new_board->get_heuristic();
 
         if (it != this->visited_cache.end()) {
@@ -120,7 +119,7 @@ std::vector< std::shared_ptr<Board> > IDASolver::perform_moves(Board *board, std
                 continue;
             }
         }
-        this->visited_cache.insert(std::pair<std::string, size_t>(new_board->get_state_hash(), new_cost));
+        this->visited_cache.insert(std::pair<size_t, size_t>(new_board->get_state_hash(), new_cost));
 
         results.push_back(new_board);
     }
