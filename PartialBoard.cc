@@ -13,16 +13,16 @@ using namespace TaquinSolve;
  * @param state         An array of integers representing the board state in row major encoding.
  * @param board_size    The width/height of the board.
  *                      The board state must contain board_size^2 entries.
- * @param move_history  A queue of moves taken to get to this board state.
+ * @param move_count    The number of moves taken to get to this state.
  * @param group_tiles   The tiles to consider in this partial board group.
  */
 PartialBoard::PartialBoard(
     std::vector<size_t> state,
     size_t board_size,
-    std::queue<Moves> move_history,
-    std::vector<size_t> group_tiles
+    size_t move_count,
+    std::shared_ptr<std::vector<size_t> > group_tiles
 )
-    : Board(state, board_size, move_history), group_tiles(group_tiles)
+    : Board(state, board_size), move_count(move_count), group_tiles(group_tiles)
 {
 }
 
@@ -42,8 +42,8 @@ size_t PartialBoard::get_state_hash()
         it != this->state.end();
         ++it
     ) {
-        std::vector<size_t>::iterator tile = std::find(this->group_tiles.begin(), this->group_tiles.end(), *it);
-        if (tile == this->group_tiles.end()) {
+        std::vector<size_t>::iterator tile = std::find(this->group_tiles->begin(), this->group_tiles->end(), *it);
+        if (tile == this->group_tiles->end()) {
             state_representation += std::to_string(*it) + ":";
         } else {
             state_representation += "*:";
@@ -83,10 +83,17 @@ PartialBoard *PartialBoard::perform_move(Moves move)
             new_state[this->zero_position + 1] = 0;
             break;
     }
-    std::queue<Moves> new_history;
-    new_history = this->move_history;
-    new_history.push(move);
 
-    return new PartialBoard(new_state, this->board_size, new_history);
+    return new PartialBoard(new_state, this->board_size, this->move_count+1, this->group_tiles);
 }
 
+/**
+ * Get the cost spent reaching this board state.
+ * Consider one move as one cost unit.
+ *
+ * @return The number of moves taken.
+ */
+size_t PartialBoard::get_cost()
+{
+    return this->move_count;
+}
