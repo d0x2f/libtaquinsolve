@@ -1,6 +1,8 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
+#include <experimental/filesystem>
 
 #include "taquinsolve.hh"
 #include "IDASolver.hh"
@@ -179,8 +181,35 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t bo
  */
 void generate_pattern_database(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file)
 {
-    TaquinSolve::BFSDatabaseGenerator generator(output_file);
-    generator.generate(goal_board, group_tiles, board_size);
+    TaquinSolve::BFSDatabaseGenerator generator;
+    generator.generate(goal_board, group_tiles, board_size, output_file);
+}
+
+/**
+ * Generate a set of pattern databases using 6-6-3 partitioning.
+ * Generated files are placed in /usr/local/share/libtaquinsolve
+ *
+ * @param goal_board    A goal board represented as a vector.
+ * @param board_size    The size of the given goal board.
+ */
+void generate_standard_pattern_databases()
+{
+    std::experimental::filesystem::create_directory("/usr/local/share/libtaquinsolve");
+
+    TaquinSolve::BFSDatabaseGenerator generator;
+    std::vector<size_t> goal_board = taquin_tokenise_board_string("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0");
+
+    std::cout << "Generating 234.." << std::endl;
+    std::set<size_t> group_tiles = {2,3,4};
+    generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/234.db.bin");
+
+    std::cout << "Generating 15671013.." << std::endl;
+    group_tiles = {1,5,6,9,10,13};
+    generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/15671013.db.bin");
+
+    std::cout << "Generating 7811121415.." << std::endl;
+    group_tiles = {7,8,11,12,14,15};
+    generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/7811121415.db.bin");
 }
 
 /**

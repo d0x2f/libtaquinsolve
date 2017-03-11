@@ -8,18 +8,15 @@ using namespace TaquinSolve;
 
 int main (int argc, char **argv)
 {
-    std::string group_goal = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0";
-    std::set<size_t> group_tiles = {1,2,3,4,7,0};
-    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/12347.db.bin");
-    group_tiles = {5,6,9,10,13,0};
-    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/5671013.db.bin");
-    group_tiles = {8,11,12,14,15,0};
-    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/811121415.db.bin");
-    return 0;
-
     struct timeval time;
     gettimeofday(&time, NULL);
     srand (((unsigned long long)time.tv_sec * 1000000) + time.tv_usec);
+
+    //Generate the standard pattern database (used for 4x4 puzzles.
+    generate_standard_pattern_databases();
+
+    //Return for now for debugging.
+    return 0;
 
     /******************************
      *  BOARD SIZE 3
@@ -76,7 +73,6 @@ int main (int argc, char **argv)
     std::cout << "\tCheck Solved: " << solved_2.check_solved() << std::endl;
 
     solvable_puzzle = "12 1 10 2 7 11 4 14 5 0 9 15 8 13 6 3";
-    //solvable_puzzle = "0 1 2 3 6 7 8 4 5 9 10 11 13 14 15 12";
     unsolvable_puzzle = "1 2 3 4 5 6 7 8 9 10 11 12 13 15 14 0";
     std::cout << "Solvable test: " << taquin_check_solvable(solvable_puzzle, board_size) << std::endl;
     std::cout << "\tInversions: " << taquin_get_inversion_count(taquin_tokenise_board_string(solvable_puzzle), board_size) << std::endl;

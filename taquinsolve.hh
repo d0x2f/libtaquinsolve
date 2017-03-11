@@ -21,5 +21,6 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, size_t boa
 std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t board_size);
 
 void generate_pattern_database(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file);
+void generate_standard_pattern_databases();
 
 extern "C" int taquin_solve_c_stub();
