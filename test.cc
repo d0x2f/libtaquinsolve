@@ -9,8 +9,12 @@ using namespace TaquinSolve;
 int main (int argc, char **argv)
 {
     std::string group_goal = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0";
-    std::vector<size_t> group_tiles = {1,2,3,4,5,6,7};
-    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4);
+    std::set<size_t> group_tiles = {1,2,3,4,7,0};
+    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/12347.db.bin");
+    group_tiles = {5,6,9,10,13,0};
+    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/5671013.db.bin");
+    group_tiles = {8,11,12,14,15,0};
+    generate_pattern_database(taquin_tokenise_board_string(group_goal), group_tiles, 4, "/tmp/811121415.db.bin");
     return 0;
 
     struct timeval time;

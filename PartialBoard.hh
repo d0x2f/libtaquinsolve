@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <set>
 
 #include "Board.hh"
 
@@ -15,16 +16,13 @@ namespace TaquinSolve
             PartialBoard(
                 std::vector<size_t> state,
                 size_t board_size,
-                size_t move_count,
-                std::shared_ptr<std::vector<size_t> > group_tiles
+                int move_count
             );
-
-            size_t get_state_hash() override;
-            size_t get_cost();
+            size_t get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles);
+            int get_cost();
             PartialBoard *perform_move(Moves move) override;
 
         protected:
-            size_t move_count = 0;
-            std::shared_ptr<std::vector<size_t> > group_tiles;
+            int move_count = 0;
     };
 }

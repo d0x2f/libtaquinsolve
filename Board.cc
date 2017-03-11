@@ -187,6 +187,10 @@ std::vector<size_t> Board::get_state()
  */
 size_t Board::get_state_hash()
 {
+    if (!this->state_hash_dirty) {
+        return this->state_hash;
+    }
+
     std::string state_representation;
     for (
         std::vector<std::size_t>::iterator it = this->state.begin();
@@ -195,7 +199,11 @@ size_t Board::get_state_hash()
     ) {
         state_representation += std::to_string(*it) + ":";
     }
-    return std::hash<std::string>{}(state_representation);
+
+    this->state_hash = std::hash<std::string>{}(state_representation);
+    this->state_hash_dirty = false;
+
+    return this->state_hash;
 }
 
 /**
@@ -204,7 +212,7 @@ size_t Board::get_state_hash()
  *
  * @return The number of moves taken.
  */
-size_t Board::get_cost()
+int Board::get_cost()
 {
     return this->move_history.size();
 }
@@ -214,19 +222,19 @@ size_t Board::get_cost()
  *
  * @return A heuristic value.
  */
-size_t Board::get_heuristic()
+int Board::get_heuristic()
 {
     if (!this->heuristic_dirty) {
         return this->heuristic;
     }
 
-    size_t manhattan_sum = 0;
+    int manhattan_sum = 0;
     for (
-        size_t i = 0;
+        int i = 0;
         i < this->state.size();
         i++
     ) {
-        size_t j = this->state.at(i);
+        int j = this->state.at(i);
         if (j == 0) {
             continue;
         }

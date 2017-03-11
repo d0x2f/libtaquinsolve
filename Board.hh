@@ -41,8 +41,8 @@ namespace TaquinSolve
             std::queue<Moves> get_move_history();
             std::vector<size_t> get_state();
             virtual size_t get_state_hash();
-            size_t get_cost();
-            size_t get_heuristic();
+            int get_cost();
+            int get_heuristic();
 
         protected:
             //An int vector representation of the state
@@ -55,11 +55,17 @@ namespace TaquinSolve
             //(represented by 0)
             size_t zero_position = 0;
 
-            //Cahced heuristic value
-            size_t heuristic = 99;
+            //Cached heuristic value
+            int heuristic = 99;
 
             //Heuristic dirty flag
             bool heuristic_dirty = true;
+
+            //Cached hash value
+            size_t state_hash = 0;
+
+            //Hash dirty flag
+            bool state_hash_dirty = true;
 
             //A queue structure that contains all the moves taken to get to this board state
             std::queue<Moves> move_history;

@@ -19,10 +19,9 @@ using namespace TaquinSolve;
 PartialBoard::PartialBoard(
     std::vector<size_t> state,
     size_t board_size,
-    size_t move_count,
-    std::shared_ptr<std::vector<size_t> > group_tiles
+    int move_count
 )
-    : Board(state, board_size), move_count(move_count), group_tiles(group_tiles)
+    : Board(state, board_size), move_count(move_count)
 {
 }
 
@@ -34,7 +33,7 @@ PartialBoard::PartialBoard(
  *
  * @return A unique hash of the partial board state.
  */
-size_t PartialBoard::get_state_hash()
+size_t PartialBoard::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles)
 {
     std::string state_representation;
     for (
@@ -42,11 +41,11 @@ size_t PartialBoard::get_state_hash()
         it != this->state.end();
         ++it
     ) {
-        std::vector<size_t>::iterator tile = std::find(this->group_tiles->begin(), this->group_tiles->end(), *it);
-        if (tile == this->group_tiles->end()) {
-            state_representation += std::to_string(*it) + ":";
-        } else {
+        std::set<size_t>::iterator tile = std::find(group_tiles->begin(), group_tiles->end(), *it);
+        if (tile == group_tiles->end()) {
             state_representation += "*:";
+        } else {
+            state_representation += std::to_string(*it) + ":";
         }
     }
     return std::hash<std::string>{}(state_representation);
@@ -84,7 +83,7 @@ PartialBoard *PartialBoard::perform_move(Moves move)
             break;
     }
 
-    return new PartialBoard(new_state, this->board_size, this->move_count+1, this->group_tiles);
+    return new PartialBoard(new_state, this->board_size, this->move_count+1);
 }
 
 /**
@@ -93,7 +92,7 @@ PartialBoard *PartialBoard::perform_move(Moves move)
  *
  * @return The number of moves taken.
  */
-size_t PartialBoard::get_cost()
+int PartialBoard::get_cost()
 {
     return this->move_count;
 }

@@ -174,11 +174,12 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t bo
  *
  * @param goal_board    A goal board represented as a vector.
  * @param group_tiles   The tiles to consider in this database.
- * @param board_size    The size of the given goal board
+ * @param board_size    The size of the given goal board.
+ * @param output_file   The file to write the generated database data to.
  */
-void generate_pattern_database(std::vector<size_t> goal_board, std::vector<size_t> group_tiles, size_t board_size)
+void generate_pattern_database(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file)
 {
-    TaquinSolve::BFSDatabaseGenerator generator;
+    TaquinSolve::BFSDatabaseGenerator generator(output_file);
     generator.generate(goal_board, group_tiles, board_size);
 }
 

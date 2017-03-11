@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 #include <vector>
 #include <queue>
 
@@ -19,6 +20,6 @@ bool taquin_check_solvable(std::string board, size_t board_size);
 std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, size_t board_size);
 std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t board_size);
 
-void generate_pattern_database(std::vector<size_t> goal_board, std::vector<size_t> group_tiles, size_t board_size);
+void generate_pattern_database(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file);
 
 extern "C" int taquin_solve_c_stub();
