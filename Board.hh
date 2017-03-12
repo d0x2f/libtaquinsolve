@@ -3,6 +3,9 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
+#include <set>
+#include <memory>
 #include <functional>
 
 namespace TaquinSolve
@@ -23,7 +26,12 @@ namespace TaquinSolve
     class Board
     {
         public:
-            Board(std::vector<size_t> state, size_t board_size, std::queue<Moves> move_history = std::queue<Moves>());
+            Board(
+                std::vector<size_t> state,
+                size_t board_size,
+                std::shared_ptr< std::map<size_t, int> > pattern_database = NULL,
+                std::queue<Moves> move_history = std::queue<Moves>()
+            );
             Board(const Board&) = delete;
             ~Board() = default;
             Board& operator=(const Board&) = delete;
@@ -40,9 +48,11 @@ namespace TaquinSolve
             std::vector<Moves> get_available_moves();
             std::queue<Moves> get_move_history();
             std::vector<size_t> get_state();
-            virtual size_t get_state_hash();
+            size_t get_state_hash();
+            size_t get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles);
             int get_cost();
             int get_heuristic();
+            int get_pattern_db_heuristic();
 
         protected:
             //An int vector representation of the state
@@ -69,5 +79,8 @@ namespace TaquinSolve
 
             //A queue structure that contains all the moves taken to get to this board state
             std::queue<Moves> move_history;
+
+            //A pointer to the pattern database given during construction.
+            std::shared_ptr< std::map<size_t, int> > pattern_database;
     };
 }

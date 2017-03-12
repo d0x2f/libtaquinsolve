@@ -6,6 +6,8 @@
 
 using namespace TaquinSolve;
 
+IDASolver::IDASolver() : Solver() {}
+
 /**
  * Solve the board state given to this object.
  * Uses an Iterative Deepening A* search algorithm.
@@ -17,7 +19,7 @@ std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
     //Since we're starting a new solve, clear the visited cache.
     this->visited_cache.clear();
 
-    std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size));
+    std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size, this->pattern_database));
 
     //Ensure the given board state is valid
     initial_board->validate_state();

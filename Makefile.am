@@ -4,13 +4,15 @@ libtaquinsolve_la_SOURCES = taquinsolve.cc \
                             PartialBoard.cc \
                             ASolver.cc \
                             IDASolver.cc \
-                            BFSDatabaseGenerator.cc
+                            BFSDatabaseGenerator.cc \
+                            Solver.cc
 
 include_HEADERS =   taquinsolve.hh \
                     Board.hh \
                     PartialBoard.hh \
                     ASolver.hh \
                     IDASolver.hh \
-                    BFSDatabaseGenerator.hh
+                    BFSDatabaseGenerator.hh \
+                    Solver.hh
 
 ACLOCAL_AMFLAGS = -I m4

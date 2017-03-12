@@ -205,7 +205,7 @@ void generate_standard_pattern_databases()
 
     std::cout << "Generating 15671013.." << std::endl;
     group_tiles = {1,5,6,9,10,13};
-    generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/15671013.db.bin");
+    generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/15691013.db.bin");
 
     std::cout << "Generating 7811121415.." << std::endl;
     group_tiles = {7,8,11,12,14,15};

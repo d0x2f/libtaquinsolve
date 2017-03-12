@@ -5,6 +5,8 @@
 
 using namespace TaquinSolve;
 
+ASolver::ASolver() : Solver() {}
+
 /**
  * Solve the board state given to this object.
  * Uses an A* search algorithm.

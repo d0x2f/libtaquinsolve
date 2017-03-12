@@ -1,6 +1,7 @@
 #include <string>
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 
 #include "Board.hh"
 #include "taquinsolve.hh"
@@ -17,8 +18,12 @@ using namespace TaquinSolve;
  *                      The board state must contain board_size^2 entries.
  * @param move_history  A queue of moves taken to get to this board state.
  */
-Board::Board(std::vector<size_t> state, size_t board_size, std::queue<Moves> move_history)
-    : state(state), board_size(board_size), move_history(move_history)
+Board::Board(
+    std::vector<size_t> state,
+    size_t board_size,
+    std::shared_ptr< std::map<size_t, int> > pattern_database,
+    std::queue<Moves> move_history
+) : state(state), board_size(board_size), pattern_database(pattern_database), move_history(move_history)
 {
     //Find where the empty cell is
     for (size_t i = 0; i < this->state.size(); i++) {
@@ -148,7 +153,7 @@ Board *Board::perform_move(Moves move)
     new_history = this->move_history;
     new_history.push(move);
 
-    return new Board(new_state, this->board_size, new_history);
+    return new Board(new_state, this->board_size, this->pattern_database, new_history);
 }
 
 /**
@@ -207,6 +212,32 @@ size_t Board::get_state_hash()
 }
 
 /**
+ * Create a unique hash of the board state to act as a simple
+ * identifier.
+ * Since this is a partial board, only include the appropriate
+ * tiles in the hash.
+ *
+ * @return A unique hash of the partial board state.
+ */
+size_t Board::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles)
+{
+    std::string state_representation;
+    for (
+        std::vector<std::size_t>::iterator it = this->state.begin();
+        it != this->state.end();
+        ++it
+    ) {
+        std::set<size_t>::iterator tile = std::find(group_tiles->begin(), group_tiles->end(), *it);
+        if (tile == group_tiles->end()) {
+            state_representation += "*:";
+        } else {
+            state_representation += std::to_string(*it) + ":";
+        }
+    }
+    return std::hash<std::string>{}(state_representation);
+}
+
+/**
  * Get the cost spent reaching this board state.
  * Consider one move as one cost unit.
  *
@@ -228,6 +259,8 @@ int Board::get_heuristic()
         return this->heuristic;
     }
 
+    int pattern_database_heuristic = this->get_pattern_db_heuristic();
+
     int manhattan_sum = 0;
     for (
         int i = 0;
@@ -242,8 +275,41 @@ int Board::get_heuristic()
         manhattan_sum += abs((i / this->board_size) - ((j-1) / this->board_size)) + abs((i % this->board_size) - ((j-1) % this->board_size));
     }
 
-    this->heuristic = manhattan_sum;
+    this->heuristic = std::max(pattern_database_heuristic, manhattan_sum);
     this->heuristic_dirty = false;
 
-    return manhattan_sum;
+    return this->heuristic;
+}
+
+
+int Board::get_pattern_db_heuristic()
+{
+    if (this->board_size != 4 || this->pattern_database == NULL) {
+        return 0;
+    }
+
+    int pattern_database_heuristic = 0;
+
+    std::set<size_t> group_tiles = {2,3,4};
+    std::map<size_t, int>::iterator search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+
+    if (search != this->pattern_database->end()) {
+        pattern_database_heuristic += search->second;
+    }
+
+    group_tiles = {1,5,6,9,10,13};
+    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+
+    if (search != this->pattern_database->end()) {
+        pattern_database_heuristic += search->second;
+    }
+
+    group_tiles = {7,8,11,12,14,15};
+    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+
+    if (search != this->pattern_database->end()) {
+        pattern_database_heuristic += search->second;
+    }
+
+    return pattern_database_heuristic;
 }
