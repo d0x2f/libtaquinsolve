@@ -1,7 +1,6 @@
 #include <string>
 #include <algorithm>
 #include <cstddef>
-#include <iostream>
 
 #include "Board.hh"
 #include "taquinsolve.hh"
