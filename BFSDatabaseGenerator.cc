@@ -19,31 +19,31 @@ using namespace TaquinSolve;
  */
 void BFSDatabaseGenerator::generate(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file)
 {
-    std::queue<std::shared_ptr<PartialBoard> > frontier;
+    std::queue<std::shared_ptr<Board> > frontier;
 
     std::shared_ptr< std::set<size_t> > group_tiles_nozero_ptr = std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles));
     group_tiles.insert(0);
     std::shared_ptr< std::set<size_t> > group_tiles_ptr = std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles));
 
-    std::shared_ptr<PartialBoard> initial_board = std::shared_ptr<PartialBoard>(new PartialBoard(goal_board, board_size, 0));
+    std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(goal_board, board_size, 0));
 
     this->database_clear();
     this->database_insert(initial_board, group_tiles_nozero_ptr, group_tiles_ptr);
     frontier.push(initial_board);
 
     while (!frontier.empty()) {
-        std::shared_ptr<PartialBoard> current = frontier.front();
+        std::shared_ptr<Board> current = frontier.front();
         frontier.pop();
 
         //Find the neighbors by applying each possible move
-        std::vector< std::shared_ptr<PartialBoard> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
+        std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
 
         for (
-            std::vector< std::shared_ptr<PartialBoard> >::iterator it = neighbors.begin();
+            std::vector< std::shared_ptr<Board> >::iterator it = neighbors.begin();
             it != neighbors.end();
             ++it
         ) {
-            std::shared_ptr<PartialBoard> neighbor = *it;
+            std::shared_ptr<Board> neighbor = *it;
             size_t neighbor_hash = neighbor->get_partial_state_hash(group_tiles_ptr);
             if (this->check_visited(neighbor_hash)) {
                 this->database_insert(neighbor, group_tiles_nozero_ptr, group_tiles_ptr);
@@ -63,11 +63,11 @@ void BFSDatabaseGenerator::generate(std::vector<size_t> goal_board, std::set<siz
  *
  * @return A list of new boards with the moves performed.
  */
-std::vector< std::shared_ptr<PartialBoard> > BFSDatabaseGenerator::perform_moves(PartialBoard *board, std::vector<Moves> moves) {
-    std::vector< std::shared_ptr<PartialBoard> > results;
+std::vector< std::shared_ptr<Board> > BFSDatabaseGenerator::perform_moves(Board *board, std::vector<Moves> moves) {
+    std::vector< std::shared_ptr<Board> > results;
 
     for (Moves move : moves) {
-        std::shared_ptr<PartialBoard> new_board = std::shared_ptr<PartialBoard>(board->perform_move(move));
+        std::shared_ptr<Board> new_board = std::shared_ptr<Board>(board->perform_move(move));
         results.push_back(new_board);
     }
 
@@ -93,7 +93,7 @@ void BFSDatabaseGenerator::database_clear()
  * @param group_tiles           The same list but including zero.
  */
 void BFSDatabaseGenerator::database_insert(
-    std::shared_ptr<PartialBoard> board,
+    std::shared_ptr<Board> board,
     std::shared_ptr< std::set<size_t> > group_tiles_nozero,
     std::shared_ptr< std::set<size_t> > group_tiles
 ) {

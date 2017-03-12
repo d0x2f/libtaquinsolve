@@ -5,7 +5,7 @@
 #include <map>
 #include <memory>
 
-#include "PartialBoard.hh"
+#include "Board.hh"
 
 namespace TaquinSolve
 {
@@ -14,7 +14,7 @@ namespace TaquinSolve
         public:
             void generate(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file);
 
-            std::vector< std::shared_ptr<PartialBoard> > perform_moves(PartialBoard *board, std::vector<Moves> moves);
+            std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
 
         protected:
             std::set<size_t> visited;
@@ -23,7 +23,7 @@ namespace TaquinSolve
             void database_clear();
 
             void database_insert(
-                std::shared_ptr<PartialBoard> board,
+                std::shared_ptr<Board> board,
                 std::shared_ptr< std::set<size_t> > group_tiles_nozero,
                 std::shared_ptr< std::set<size_t> > group_tiles
             );
