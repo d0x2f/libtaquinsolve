@@ -44,5 +44,4 @@ autom4te.cache/
 configure
 ar-lib
 build/
-m4/
 test
