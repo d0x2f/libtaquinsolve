@@ -7,6 +7,7 @@ C++ library for solving taquin picture puzzles
     * Is now being used, but generating non-optimal results.
     * Only load the pattern databases for 4x4 puzzles (currently loading for all)
 * Include a packaged set of databases with the source to be installed in /usr/local/share
+* Sort out typing accross the library, I'm sure size_t isn't appropriate in a lot of places, not to mention inconsistent across platforms.
 
 ## Resources
 * Additive pattern database papers

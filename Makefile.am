@@ -13,4 +13,5 @@ include_HEADERS =   taquinsolve.hh \
                     BFSDatabaseGenerator.hh \
                     Solver.hh
 
+libtaquinsolve_la_CXXFLAGS = -lstdc++fs
 ACLOCAL_AMFLAGS = -I m4

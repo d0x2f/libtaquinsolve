@@ -195,16 +195,17 @@ size_t Board::get_state_hash()
         return this->state_hash;
     }
 
-    std::string state_representation;
+    size_t state_representation = 0;
+    int i=0;
     for (
         std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
-        ++it
+        ++it, i++
     ) {
-        state_representation += std::to_string(*it) + ":";
+        state_representation += (*it) << (i*4);
     }
 
-    this->state_hash = std::hash<std::string>{}(state_representation);
+    this->state_hash = state_representation;
     this->state_hash_dirty = false;
 
     return this->state_hash;
@@ -220,20 +221,33 @@ size_t Board::get_state_hash()
  */
 size_t Board::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles)
 {
-    std::string state_representation;
+    size_t state_representation = 0;
+    size_t unused_tile;
+
+    //Find an unused tile to mark as a tile in the out group.
+    for (int n : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}) {
+        std::set<size_t>::iterator tile = group_tiles->find(n);
+        if (tile == group_tiles->end()) {
+            unused_tile = n;
+            break;
+        }
+    }
+
+    //Loop over the state and add the tile to the representation in the right position.
+    int i=0;
     for (
         std::vector<std::size_t>::iterator it = this->state.begin();
         it != this->state.end();
-        ++it
+        ++it, i++
     ) {
-        std::set<size_t>::iterator tile = std::find(group_tiles->begin(), group_tiles->end(), *it);
+        std::set<size_t>::iterator tile = group_tiles->find(*it);
         if (tile == group_tiles->end()) {
-            state_representation += "*:";
+            state_representation += unused_tile << (i*4);
         } else {
-            state_representation += std::to_string(*it) + ":";
+            state_representation += (*it) << (i*4);
         }
     }
-    return std::hash<std::string>{}(state_representation);
+    return state_representation;
 }
 
 /**
