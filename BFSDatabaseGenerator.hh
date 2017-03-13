@@ -15,7 +15,7 @@ namespace TaquinSolve
         public:
             void generate(std::vector<uint8_t> goal_board, std::set<uint8_t> group_tiles, uint8_t board_size, std::string output_file);
 
-            std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
+            std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves, std::shared_ptr< std::set<uint8_t> > group_tiles = NULL);
 
         protected:
             std::set<uint64_t> visited;

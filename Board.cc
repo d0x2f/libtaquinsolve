@@ -129,33 +129,45 @@ bool Board::check_solved()
  *
  * @return A new board object with the move applied.
  */
-Board *Board::perform_move(Moves move)
+Board *Board::perform_move(Moves move, std::shared_ptr<std::set<uint8_t> > group_tiles)
 {
     std::vector<uint8_t> new_state = this->state;
+    uint8_t tile;
     switch (move) {
         case Moves::UP:
-            new_state[this->zero_position] = new_state[this->zero_position - this->board_size];
+            tile = new_state[this->zero_position - this->board_size];
+            new_state[this->zero_position] = tile;
             new_state[this->zero_position - this->board_size] = 0;
             break;
 
         case Moves::DOWN:
-            new_state[this->zero_position] = new_state[this->zero_position + this->board_size];
+            tile = new_state[this->zero_position + this->board_size];
+            new_state[this->zero_position] = tile;
             new_state[this->zero_position + this->board_size] = 0;
             break;
 
         case Moves::LEFT:
-            new_state[this->zero_position] = new_state[this->zero_position - 1];
+            tile = new_state[this->zero_position - 1];
+            new_state[this->zero_position] = tile;
             new_state[this->zero_position - 1] = 0;
             break;
 
         case Moves::RIGHT:
-            new_state[this->zero_position] = new_state[this->zero_position + 1];
+            tile = new_state[this->zero_position + 1];
+            new_state[this->zero_position] = tile;
             new_state[this->zero_position + 1] = 0;
             break;
     }
     std::queue<Moves> new_history;
     new_history = this->move_history;
-    new_history.push(move);
+
+    if (group_tiles != NULL) {
+        //Only add to the history if the tile is in the group.
+        std::set<uint8_t>::iterator search = group_tiles->find(tile);
+        if (search != group_tiles->end()) {
+            new_history.push(move);
+        }
+    }
 
     return new Board(new_state, this->board_size, this->pattern_database, new_history);
 }
@@ -219,8 +231,9 @@ uint64_t Board::get_state_hash()
 /**
  * Create a unique hash of the board state to act as a simple
  * identifier.
- * Since this is a partial board, only include the appropriate
- * tiles in the hash.
+ * Only include the given tiles in the hash.
+ *
+ * @param group_tiles The tiles to consider for this hash.
  *
  * @return A unique hash of the partial board state.
  */

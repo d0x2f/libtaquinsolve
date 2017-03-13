@@ -38,7 +38,7 @@ namespace TaquinSolve
             Board& operator=(const Board&) = delete;
 
             //Modify
-            virtual Board *perform_move(Moves move);
+            virtual Board *perform_move(Moves move, std::shared_ptr<std::set<uint8_t> > group_tiles = NULL);
             void replace_move_history(std::queue<Moves> move_history);
 
             //Validate

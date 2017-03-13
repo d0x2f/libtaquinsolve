@@ -41,7 +41,7 @@ void BFSDatabaseGenerator::generate(std::vector<uint8_t> goal_board, std::set<ui
         frontier.pop();
 
         //Find the neighbors by applying each possible move
-        std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves());
+        std::vector< std::shared_ptr<Board> > neighbors = this->perform_moves(current.get(), current->get_available_moves(), group_tiles_nozero_ptr);
 
         for (
             std::vector< std::shared_ptr<Board> >::iterator it = neighbors.begin();
@@ -68,11 +68,11 @@ void BFSDatabaseGenerator::generate(std::vector<uint8_t> goal_board, std::set<ui
  *
  * @return A list of new boards with the moves performed.
  */
-std::vector< std::shared_ptr<Board> > BFSDatabaseGenerator::perform_moves(Board *board, std::vector<Moves> moves) {
+std::vector< std::shared_ptr<Board> > BFSDatabaseGenerator::perform_moves(Board *board, std::vector<Moves> moves, std::shared_ptr< std::set<uint8_t> > group_tiles) {
     std::vector< std::shared_ptr<Board> > results;
 
     for (Moves move : moves) {
-        std::shared_ptr<Board> new_board = std::shared_ptr<Board>(board->perform_move(move));
+        std::shared_ptr<Board> new_board = std::shared_ptr<Board>(board->perform_move(move, group_tiles));
         results.push_back(new_board);
     }
 
