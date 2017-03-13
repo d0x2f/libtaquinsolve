@@ -167,6 +167,8 @@ Board *Board::perform_move(Moves move, std::shared_ptr<std::set<uint8_t> > group
         if (search != group_tiles->end()) {
             new_history.push(move);
         }
+    } else {
+        new_history.push(move);
     }
 
     return new Board(new_state, this->board_size, this->pattern_database, new_history);
