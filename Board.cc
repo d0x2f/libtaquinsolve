@@ -18,14 +18,14 @@ using namespace TaquinSolve;
  * @param move_history  A queue of moves taken to get to this board state.
  */
 Board::Board(
-    std::vector<size_t> state,
-    size_t board_size,
-    std::shared_ptr< std::map<size_t, int> > pattern_database,
+    std::vector<uint8_t> state,
+    uint8_t board_size,
+    std::shared_ptr< std::map<uint64_t, uint8_t> > pattern_database,
     std::queue<Moves> move_history
 ) : state(state), board_size(board_size), pattern_database(pattern_database), move_history(move_history)
 {
     //Find where the empty cell is
-    for (size_t i = 0; i < this->state.size(); i++) {
+    for (uint8_t i = 0; i < this->state.size(); i++) {
         if (this->state[i] == 0) {
             this->zero_position = i;
         }
@@ -45,19 +45,19 @@ void Board::validate_state()
     }
 
     //Sort the indices and make sure they are a sequence from 0.
-    std::vector<size_t> sorted_state = this->state;
+    std::vector<uint8_t> sorted_state = this->state;
     std::sort(sorted_state.begin(), sorted_state.end());
 
-    size_t last = -1;
+    uint8_t last = 0;
     for (
-        std::vector<size_t>::iterator it = sorted_state.begin();
+        std::vector<uint8_t>::iterator it = sorted_state.begin();
         it != sorted_state.end();
         ++it
     ) {
-        if ((*it) != last+1) {
-            throw std::string("Improper sequence given, missing: ") + std::to_string(last+1);
+        if ((*it) != last) {
+            throw std::string("Improper sequence given, missing: ") + std::to_string(last);
         }
-        last = (*it);
+        last = (*it)+1;
     }
 
     if (!taquin_check_solvable(this->state, this->board_size)) {
@@ -77,8 +77,8 @@ std::vector<Moves> Board::get_available_moves()
     std::vector<Moves> output;
 
     //Get cartesian coordinates of the zero position
-    size_t empty_x = this->zero_position % this->board_size;
-    size_t empty_y = this->zero_position / this->board_size;
+    uint8_t empty_x = this->zero_position % this->board_size;
+    uint8_t empty_y = this->zero_position / this->board_size;
 
     //Check if zero is on any boundary
     if (empty_x > 0)
@@ -103,9 +103,9 @@ std::vector<Moves> Board::get_available_moves()
  */
 bool Board::check_solved()
 {
-    size_t compare = 1;
+    uint8_t compare = 1;
     for (
-        std::vector<size_t>::iterator it = this->state.begin();
+        std::vector<uint8_t>::iterator it = this->state.begin();
         it != this->state.end()-1;
         ++it
     ) {
@@ -126,7 +126,7 @@ bool Board::check_solved()
  */
 Board *Board::perform_move(Moves move)
 {
-    std::vector<size_t> new_state = this->state;
+    std::vector<uint8_t> new_state = this->state;
     switch (move) {
         case Moves::UP:
             new_state[this->zero_position] = new_state[this->zero_position - this->board_size];
@@ -178,7 +178,7 @@ void Board::replace_move_history(std::queue<Moves> move_history)
 }
 
 
-std::vector<size_t> Board::get_state()
+std::vector<uint8_t> Board::get_state()
 {
     return this->state;
 }
@@ -189,20 +189,20 @@ std::vector<size_t> Board::get_state()
  *
  * @return A unique hash of the board state.
  */
-size_t Board::get_state_hash()
+uint64_t Board::get_state_hash()
 {
     if (!this->state_hash_dirty) {
         return this->state_hash;
     }
 
-    size_t state_representation = 0;
-    int i=0;
+    uint64_t state_representation = 0;
+    unsigned int i=0;
     for (
-        std::vector<std::size_t>::iterator it = this->state.begin();
+        std::vector<uint8_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it, i++
     ) {
-        state_representation += (*it) << (i*4);
+        state_representation += ((uint64_t)(*it)) << (i*4);
     }
 
     this->state_hash = state_representation;
@@ -219,14 +219,14 @@ size_t Board::get_state_hash()
  *
  * @return A unique hash of the partial board state.
  */
-size_t Board::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles)
+uint64_t Board::get_partial_state_hash(std::shared_ptr<std::set<uint8_t> > group_tiles)
 {
-    size_t state_representation = 0;
-    size_t unused_tile;
+    uint64_t state_representation = 0;
+    uint8_t unused_tile;
 
     //Find an unused tile to mark as a tile in the out group.
-    for (int n : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}) {
-        std::set<size_t>::iterator tile = group_tiles->find(n);
+    for (uint8_t n : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}) {
+        std::set<uint8_t>::iterator tile = group_tiles->find(n);
         if (tile == group_tiles->end()) {
             unused_tile = n;
             break;
@@ -234,17 +234,17 @@ size_t Board::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_ti
     }
 
     //Loop over the state and add the tile to the representation in the right position.
-    int i=0;
+    uint8_t i=0;
     for (
-        std::vector<std::size_t>::iterator it = this->state.begin();
+        std::vector<uint8_t>::iterator it = this->state.begin();
         it != this->state.end();
         ++it, i++
     ) {
-        std::set<size_t>::iterator tile = group_tiles->find(*it);
+        std::set<uint8_t>::iterator tile = group_tiles->find(*it);
         if (tile == group_tiles->end()) {
-            state_representation += unused_tile << (i*4);
+            state_representation += ((uint64_t)(unused_tile)) << (i*4);
         } else {
-            state_representation += (*it) << (i*4);
+            state_representation += ((uint64_t)(*it)) << (i*4);
         }
     }
     return state_representation;
@@ -256,7 +256,7 @@ size_t Board::get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_ti
  *
  * @return The number of moves taken.
  */
-int Board::get_cost()
+uint8_t Board::get_cost()
 {
     return this->move_history.size();
 }
@@ -266,21 +266,21 @@ int Board::get_cost()
  *
  * @return A heuristic value.
  */
-int Board::get_heuristic()
+uint8_t Board::get_heuristic()
 {
     if (!this->heuristic_dirty) {
         return this->heuristic;
     }
 
-    int pattern_database_heuristic = this->get_pattern_db_heuristic();
+    uint8_t pattern_database_heuristic = this->get_pattern_db_heuristic();
 
-    int manhattan_sum = 0;
+    uint8_t manhattan_sum = 0;
     for (
-        int i = 0;
+        uint8_t i = 0;
         i < this->state.size();
         i++
     ) {
-        int j = this->state.at(i);
+        uint8_t j = this->state.at(i);
         if (j == 0) {
             continue;
         }
@@ -295,30 +295,30 @@ int Board::get_heuristic()
 }
 
 
-int Board::get_pattern_db_heuristic()
+uint8_t Board::get_pattern_db_heuristic()
 {
     if (this->board_size != 4 || this->pattern_database == NULL) {
         return 0;
     }
 
-    int pattern_database_heuristic = 0;
+    uint8_t pattern_database_heuristic = 0;
 
-    std::set<size_t> group_tiles = {2,3,4};
-    std::map<size_t, int>::iterator search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+    std::set<uint8_t> group_tiles = {2,3,4};
+    std::map<uint64_t, uint8_t>::iterator search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles))));
 
     if (search != this->pattern_database->end()) {
         pattern_database_heuristic += search->second;
     }
 
     group_tiles = {1,5,6,9,10,13};
-    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles))));
 
     if (search != this->pattern_database->end()) {
         pattern_database_heuristic += search->second;
     }
 
     group_tiles = {7,8,11,12,14,15};
-    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles))));
+    search = this->pattern_database->find(this->get_partial_state_hash(std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles))));
 
     if (search != this->pattern_database->end()) {
         pattern_database_heuristic += search->second;

@@ -14,7 +14,7 @@ IDASolver::IDASolver() : Solver() {}
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
+std::queue<Moves> IDASolver::solve(std::vector<uint8_t> board, uint8_t board_size)
 {
     //Since we're starting a new solve, clear the visited cache.
     this->visited_cache.clear();
@@ -24,14 +24,14 @@ std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
     //Ensure the given board state is valid
     initial_board->validate_state();
 
-    size_t bound = initial_board->get_heuristic();
+    uint32_t bound = initial_board->get_heuristic();
 
     while (true) {
         SearchResult result = this->search(initial_board, bound);
         if (result.solved) {
             return result.board->get_move_history();
         }
-        if (result.cost == std::numeric_limits<std::size_t>::max()) {
+        if (result.cost == std::numeric_limits<std::uint8_t>::max()) {
             throw std::string("Puzzle is unsolvable.");
         }
 
@@ -47,9 +47,9 @@ std::queue<Moves> IDASolver::solve(std::vector<size_t> board, size_t board_size)
  *
  * @return a struct representing either a solution or the lowest cost board which exceeded the bound.
  */
-SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
+SearchResult IDASolver::search(std::shared_ptr<Board> board, uint32_t bound)
 {
-    size_t board_cost = board->get_cost() + board->get_heuristic();
+    uint8_t board_cost = board->get_cost() + board->get_heuristic();
 
     //If this board cost is above the bound return it.
     if (board_cost > bound) {
@@ -75,7 +75,7 @@ SearchResult IDASolver::search(std::shared_ptr<Board> board, size_t bound)
     //Find the neighbor with the minimum search() value
     SearchResult min_result(
         false,
-        std::numeric_limits<size_t>::max(),
+        std::numeric_limits<uint8_t>::max(),
         board
     );
 
@@ -113,15 +113,15 @@ std::vector< std::shared_ptr<Board> > IDASolver::perform_moves(Board *board, std
 
     for (Moves move : moves) {
         std::shared_ptr<Board> new_board = std::shared_ptr<Board>(board->perform_move(move));
-        std::map<size_t, size_t>::iterator it = this->visited_cache.find(new_board->get_state_hash());
-        size_t new_cost = new_board->get_cost() + new_board->get_heuristic();
+        std::map<uint64_t, uint8_t>::iterator it = this->visited_cache.find(new_board->get_state_hash());
+        uint8_t new_cost = new_board->get_cost() + new_board->get_heuristic();
 
         if (it != this->visited_cache.end()) {
             if ( new_cost > it->second) {
                 continue;
             }
         }
-        this->visited_cache.insert(std::pair<size_t, size_t>(new_board->get_state_hash(), new_cost));
+        this->visited_cache.insert(std::pair<uint64_t, uint8_t>(new_board->get_state_hash(), new_cost));
 
         results.push_back(new_board);
     }

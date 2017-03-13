@@ -7,6 +7,7 @@
 #include <set>
 #include <memory>
 #include <functional>
+#include <cstdint>
 
 namespace TaquinSolve
 {
@@ -27,9 +28,9 @@ namespace TaquinSolve
     {
         public:
             Board(
-                std::vector<size_t> state,
-                size_t board_size,
-                std::shared_ptr< std::map<size_t, int> > pattern_database = NULL,
+                std::vector<uint8_t> state,
+                uint8_t board_size,
+                std::shared_ptr< std::map<uint64_t, uint8_t> > pattern_database = NULL,
                 std::queue<Moves> move_history = std::queue<Moves>()
             );
             Board(const Board&) = delete;
@@ -47,32 +48,32 @@ namespace TaquinSolve
             //Read
             std::vector<Moves> get_available_moves();
             std::queue<Moves> get_move_history();
-            std::vector<size_t> get_state();
-            size_t get_state_hash();
-            size_t get_partial_state_hash(std::shared_ptr<std::set<size_t> > group_tiles);
-            int get_cost();
-            int get_heuristic();
-            int get_pattern_db_heuristic();
+            std::vector<uint8_t> get_state();
+            uint64_t get_state_hash();
+            uint64_t get_partial_state_hash(std::shared_ptr<std::set<uint8_t> > group_tiles);
+            uint8_t get_cost();
+            uint8_t get_heuristic();
+            uint8_t get_pattern_db_heuristic();
 
         protected:
             //An int vector representation of the state
-            std::vector<size_t> state;
+            std::vector<uint8_t> state;
 
             //The size of the board
-            size_t board_size = 0;
+            uint8_t board_size = 0;
 
             //The current position of the empty tile
             //(represented by 0)
-            size_t zero_position = 0;
+            uint8_t zero_position = 0;
 
             //Cached heuristic value
-            int heuristic = 99;
+            uint8_t heuristic = 99;
 
             //Heuristic dirty flag
             bool heuristic_dirty = true;
 
             //Cached hash value
-            size_t state_hash = 0;
+            uint64_t state_hash = 0;
 
             //Hash dirty flag
             bool state_hash_dirty = true;
@@ -81,6 +82,6 @@ namespace TaquinSolve
             std::queue<Moves> move_history;
 
             //A pointer to the pattern database given during construction.
-            std::shared_ptr< std::map<size_t, int> > pattern_database;
+            std::shared_ptr< std::map<uint64_t, uint8_t> > pattern_database;
     };
 }

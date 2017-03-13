@@ -17,13 +17,13 @@ using namespace TaquinSolve;
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-void BFSDatabaseGenerator::generate(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file)
+void BFSDatabaseGenerator::generate(std::vector<uint8_t> goal_board, std::set<uint8_t> group_tiles, uint8_t board_size, std::string output_file)
 {
     std::queue<std::shared_ptr<Board> > frontier;
 
-    std::shared_ptr< std::set<size_t> > group_tiles_nozero_ptr = std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles));
+    std::shared_ptr< std::set<uint8_t> > group_tiles_nozero_ptr = std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles));
     group_tiles.insert(0);
-    std::shared_ptr< std::set<size_t> > group_tiles_ptr = std::shared_ptr< std::set<size_t> >(new std::set<size_t>(group_tiles));
+    std::shared_ptr< std::set<uint8_t> > group_tiles_ptr = std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles));
 
     std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(goal_board, board_size, 0));
 
@@ -44,7 +44,7 @@ void BFSDatabaseGenerator::generate(std::vector<size_t> goal_board, std::set<siz
             ++it
         ) {
             std::shared_ptr<Board> neighbor = *it;
-            size_t neighbor_hash = neighbor->get_partial_state_hash(group_tiles_ptr);
+            uint64_t neighbor_hash = neighbor->get_partial_state_hash(group_tiles_ptr);
             if (this->check_visited(neighbor_hash)) {
                 this->database_insert(neighbor, group_tiles_nozero_ptr, group_tiles_ptr);
                 frontier.push(neighbor);
@@ -94,15 +94,15 @@ void BFSDatabaseGenerator::database_clear()
  */
 void BFSDatabaseGenerator::database_insert(
     std::shared_ptr<Board> board,
-    std::shared_ptr< std::set<size_t> > group_tiles_nozero,
-    std::shared_ptr< std::set<size_t> > group_tiles
+    std::shared_ptr< std::set<uint8_t> > group_tiles_nozero,
+    std::shared_ptr< std::set<uint8_t> > group_tiles
 ) {
     this->visited.insert(board->get_partial_state_hash(group_tiles));
-    size_t db_index = board->get_partial_state_hash(group_tiles_nozero);
+    uint64_t db_index = board->get_partial_state_hash(group_tiles_nozero);
 
     if (board->get_cost() < this->database_get_value(db_index)) {
         this->database.insert(
-            std::pair<size_t, int>(
+            std::pair<uint64_t, uint8_t>(
                 db_index,
                 board->get_cost()
             )
@@ -117,7 +117,7 @@ void BFSDatabaseGenerator::database_insert(
  *
  * @return True or False.
  */
-bool BFSDatabaseGenerator::check_visited(size_t index)
+bool BFSDatabaseGenerator::check_visited(uint64_t index)
 {
     return this->visited.find(index) == this->visited.end();
 }
@@ -130,11 +130,11 @@ bool BFSDatabaseGenerator::check_visited(size_t index)
  *
  * @return The value found with the given key.
  */
-int BFSDatabaseGenerator::database_get_value(size_t index)
+uint8_t BFSDatabaseGenerator::database_get_value(uint64_t index)
 {
-    std::map<size_t, int>::iterator it = this->database.find(index);
+    std::map<uint64_t, uint8_t>::iterator it = this->database.find(index);
     if (it == this->database.end()) {
-        return std::numeric_limits<int>::max();
+        return std::numeric_limits<uint8_t>::max();
     } else {
         return it->second;
     }
@@ -148,12 +148,12 @@ void BFSDatabaseGenerator::save_database(std::string output_file)
     std::ofstream file (output_file, std::ios::out | std::ios::binary);
 
     for (
-        std::map<size_t, int>::iterator it = this->database.begin();
+        std::map<uint64_t, uint8_t>::iterator it = this->database.begin();
         it != this->database.end();
         ++it
     ) {
         file.write((char *)(&it->first), 8);
-        file.write((char *)(&it->second), 4);
+        file.write((char *)(&it->second), 1);
     }
     file.close();
 }

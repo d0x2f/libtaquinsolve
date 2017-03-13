@@ -2,6 +2,7 @@
 
 #include <string>
 #include <queue>
+#include <cstdint>
 
 #include "Solver.hh"
 
@@ -9,10 +10,10 @@ namespace TaquinSolve
 {
     struct SearchResult {
         bool solved;
-        size_t cost;
+        uint8_t cost;
         std::shared_ptr<Board> board;
 
-        SearchResult(bool solved, size_t cost, std::shared_ptr<Board> board)
+        SearchResult(bool solved, uint8_t cost, std::shared_ptr<Board> board)
             : solved(solved), cost(cost), board(board)
         {
         }
@@ -22,10 +23,10 @@ namespace TaquinSolve
     {
         public:
             IDASolver();
-            std::queue<Moves> solve(std::vector<size_t> board, size_t board_size);
-            SearchResult search(std::shared_ptr<Board> board, size_t bound);
+            std::queue<Moves> solve(std::vector<uint8_t> board, uint8_t board_size);
+            SearchResult search(std::shared_ptr<Board> board, uint32_t bound);
             std::vector< std::shared_ptr<Board> > perform_moves(Board *board, std::vector<Moves> moves);
         protected:
-            std::map<size_t, size_t> visited_cache;
+            std::map<uint64_t, uint8_t> visited_cache;
     };
 }

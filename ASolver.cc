@@ -13,7 +13,7 @@ ASolver::ASolver() : Solver() {}
  *
  * @return  A queue structure representing moves taken to reach the solution.
  */
-std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
+std::queue<Moves> ASolver::solve(std::vector<uint8_t> board, uint8_t board_size)
 {
     std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size));
 
@@ -21,12 +21,12 @@ std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
     initial_board->validate_state();
 
     //Open set of unexplored board states
-    std::map<size_t, std::shared_ptr<Board> > open;
+    std::map<uint64_t, std::shared_ptr<Board> > open;
 
     //Closed set of already explored states
-    std::unordered_set<size_t> closed;
+    std::unordered_set<uint64_t> closed;
 
-    open.insert(std::pair<size_t, std::shared_ptr<Board> >(initial_board->get_state_hash(), initial_board));
+    open.insert(std::pair<uint64_t, std::shared_ptr<Board> >(initial_board->get_state_hash(), initial_board));
 
     //Continue to check open states until there are none left
     while(!open.empty()) {
@@ -54,7 +54,7 @@ std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
             ++it
         ) {
             std::shared_ptr<Board> neighbor = *it;
-            size_t neighbor_hash = neighbor->get_state_hash();
+            uint64_t neighbor_hash = neighbor->get_state_hash();
 
             //If this state has been explored, skip it
             if (closed.find(neighbor_hash) != closed.end()) {
@@ -63,9 +63,9 @@ std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
 
             //If this board is not already in the open set, then add it.
             //Otherwise replace the existing one with this one if it's cost is better.
-            std::map<size_t, std::shared_ptr<Board> >::iterator existing_entry = open.find(neighbor_hash);
+            std::map<uint64_t, std::shared_ptr<Board> >::iterator existing_entry = open.find(neighbor_hash);
             if (existing_entry == open.end()) {
-                open.insert(std::pair<size_t, std::shared_ptr<Board> >(neighbor_hash, neighbor));
+                open.insert(std::pair<uint64_t, std::shared_ptr<Board> >(neighbor_hash, neighbor));
             } else if (neighbor->get_cost() < existing_entry->second->get_cost()) {
                 //Replace the existing board by replacing it's move history.
                 existing_entry->second->replace_move_history(neighbor->get_move_history());
@@ -82,17 +82,17 @@ std::queue<Moves> ASolver::solve(std::vector<size_t> board, size_t board_size)
  *
  * @return A pointer to the cheapest board.
  */
-std::shared_ptr<Board> ASolver::get_cheapest_board(std::map<size_t, std::shared_ptr<Board> > *open_set)
+std::shared_ptr<Board> ASolver::get_cheapest_board(std::map<uint64_t, std::shared_ptr<Board> > *open_set)
 {
     if (open_set->size() < 1) {
         throw std::string("No elements in open set");
     }
 
-    std::map<size_t, std::shared_ptr<Board> >::iterator it = open_set->begin();
+    std::map<uint64_t, std::shared_ptr<Board> >::iterator it = open_set->begin();
 
-    int lowest_found = it->second->get_cost() + it->second->get_heuristic();
+    uint8_t lowest_found = it->second->get_cost() + it->second->get_heuristic();
     std::shared_ptr<Board> lowest_found_ref = it->second;
-    int cost;
+    uint8_t cost;
 
     it++;
 

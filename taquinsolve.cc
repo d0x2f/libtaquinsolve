@@ -15,13 +15,13 @@
  *
  * @return A random solvable board in string representation.
  */
-std::string taquin_generate_string(size_t board_size)
+std::string taquin_generate_string(uint8_t board_size)
 {
-    std::vector<size_t> board = taquin_generate_vector(board_size);
+    std::vector<uint8_t> board = taquin_generate_vector(board_size);
 
     std::string output;
 
-    std::vector<size_t>::iterator it = board.begin();
+    std::vector<uint8_t>::iterator it = board.begin();
     for(;it != board.end(); it++) {
         output += std::to_string(*it) + ' ';
     }
@@ -35,13 +35,13 @@ std::string taquin_generate_string(size_t board_size)
  *
  * @return A random solvable board in vector representation.
  */
-std::vector<size_t> taquin_generate_vector(size_t board_size)
+std::vector<uint8_t> taquin_generate_vector(uint8_t board_size)
 {
     //Create a uniform board of the required size
-    size_t len = board_size * board_size;
-    std::vector<size_t> board;
+    uint8_t len = board_size * board_size;
+    std::vector<uint8_t> board;
 
-    for (size_t i=0; i<len; i++) {
+    for (uint8_t i=0; i<len; i++) {
         board.push_back(i);
     }
 
@@ -65,7 +65,7 @@ std::vector<size_t> taquin_generate_vector(size_t board_size)
  * @param board         The board state represented as a string.
  * @param board_size    The width/height of the board.
  */
-bool taquin_check_solvable(std::string board_string, size_t board_size)
+bool taquin_check_solvable(std::string board_string, uint8_t board_size)
 {
     return taquin_check_solvable(taquin_tokenise_board_string(board_string), board_size);
 }
@@ -78,12 +78,12 @@ bool taquin_check_solvable(std::string board_string, size_t board_size)
  *
  * @return True if the board is solvable.
  */
-bool taquin_check_solvable(std::vector<size_t> board, size_t board_size)
+bool taquin_check_solvable(std::vector<uint8_t> board, uint8_t board_size)
 {
-    size_t len = board_size * board_size;
-    size_t inversion_count = taquin_get_inversion_count(board, board_size);
-    size_t zero_position = 0;
-    for (size_t i=0; i<len; i++) {
+    uint8_t len = board_size * board_size;
+    uint8_t inversion_count = taquin_get_inversion_count(board, board_size);
+    uint8_t zero_position = 0;
+    for (uint8_t i=0; i<len; i++) {
         if (board.at(i) == 0) {
             zero_position = i;
             break;
@@ -106,12 +106,12 @@ bool taquin_check_solvable(std::vector<size_t> board, size_t board_size)
  *
  * @return the number of inversions
  */
-size_t taquin_get_inversion_count(std::vector<size_t> board, size_t board_size)
+uint8_t taquin_get_inversion_count(std::vector<uint8_t> board, uint8_t board_size)
 {
-    size_t len = board.size();
-    size_t inversion_count = 0;
-    for (size_t i=0; i<len; i++) {
-        for (size_t j=i+1; j<len; j++) {
+    uint8_t len = board.size();
+    uint8_t inversion_count = 0;
+    for (uint8_t i=0; i<len; i++) {
+        for (uint8_t j=i+1; j<len; j++) {
             if (board.at(j) !=0) {
                 inversion_count += (board.at(i) > board.at(j));
             }
@@ -128,17 +128,17 @@ size_t taquin_get_inversion_count(std::vector<size_t> board, size_t board_size)
  *
  * @return A board state represented as a vector.
  */
-std::vector<size_t> taquin_tokenise_board_string(std::string str, char sep)
+std::vector<uint8_t> taquin_tokenise_board_string(std::string str, char sep)
 {
-    std::vector<size_t> ret;
+    std::vector<uint8_t> ret;
 
     std::istringstream stm(str);
     std::string token;
     while( std::getline( stm, token, sep ) ) {
         std::stringstream sstream(token);
-        size_t result;
+        unsigned int result;
         sstream >> result;
-        ret.push_back(result);
+        ret.push_back((uint8_t)result);
     }
 
     return ret;
@@ -152,7 +152,7 @@ std::vector<size_t> taquin_tokenise_board_string(std::string str, char sep)
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, size_t board_size)
+std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, uint8_t board_size)
 {
     return taquin_solve(taquin_tokenise_board_string(board_string), board_size);
 }
@@ -165,7 +165,7 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, size_t boa
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t board_size)
+std::queue<TaquinSolve::Moves> taquin_solve(std::vector<uint8_t> board, uint8_t board_size)
 {
     TaquinSolve::IDASolver solver;
     return solver.solve(board, board_size);
@@ -179,7 +179,7 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::vector<size_t> board, size_t bo
  * @param board_size    The size of the given goal board.
  * @param output_file   The file to write the generated database data to.
  */
-void generate_pattern_database(std::vector<size_t> goal_board, std::set<size_t> group_tiles, size_t board_size, std::string output_file)
+void generate_pattern_database(std::vector<uint8_t> goal_board, std::set<uint8_t> group_tiles, uint8_t board_size, std::string output_file)
 {
     TaquinSolve::BFSDatabaseGenerator generator;
     generator.generate(goal_board, group_tiles, board_size, output_file);
@@ -197,10 +197,10 @@ void generate_standard_pattern_databases()
     std::experimental::filesystem::create_directory("/usr/local/share/libtaquinsolve");
 
     TaquinSolve::BFSDatabaseGenerator generator;
-    std::vector<size_t> goal_board = taquin_tokenise_board_string("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0");
+    std::vector<uint8_t> goal_board = taquin_tokenise_board_string("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0");
 
     std::cout << "Generating 234.." << std::endl;
-    std::set<size_t> group_tiles = {2,3,4};
+    std::set<uint8_t> group_tiles = {2,3,4};
     generator.generate(goal_board, group_tiles, 4, "/usr/local/share/libtaquinsolve/234.db.bin");
 
     std::cout << "Generating 15671013.." << std::endl;
