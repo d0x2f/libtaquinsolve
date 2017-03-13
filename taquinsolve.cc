@@ -5,8 +5,9 @@
 #include <experimental/filesystem>
 
 #include "taquinsolve.hh"
-#include "IDASolver.hh"
 #include "BFSDatabaseGenerator.hh"
+
+TaquinSolve::IDASolver taquin_solver;
 
 /**
  * Generate a solvable puzzle with the given board size.
@@ -167,8 +168,7 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, uint8_t bo
  */
 std::queue<TaquinSolve::Moves> taquin_solve(std::vector<uint8_t> board, uint8_t board_size)
 {
-    TaquinSolve::IDASolver solver;
-    return solver.solve(board, board_size);
+    return taquin_solver.solve(board, board_size);
 }
 
 /**

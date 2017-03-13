@@ -5,7 +5,7 @@
 #include <vector>
 #include <queue>
 
-#include "Board.hh"
+#include "IDASolver.hh"
 
 std::vector<uint8_t> taquin_tokenise_board_string(std::string str, char sep = ' ');
 
@@ -22,5 +22,7 @@ std::queue<TaquinSolve::Moves> taquin_solve(std::vector<uint8_t> board, uint8_t 
 
 void generate_pattern_database(std::vector<uint8_t> goal_board, std::set<uint8_t> group_tiles, uint8_t board_size, std::string output_file);
 void generate_standard_pattern_databases();
+
+extern TaquinSolve::IDASolver taquin_solver;
 
 extern "C" int taquin_solve_c_stub();

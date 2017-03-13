@@ -15,6 +15,11 @@ ASolver::ASolver() : Solver() {}
  */
 std::queue<Moves> ASolver::solve(std::vector<uint8_t> board, uint8_t board_size)
 {
+    //Check if the board size is 4 and load the pattern db if it is.
+    if (board_size == 4) {
+        this->load_pattern_database();
+    }
+
     std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size));
 
     //Ensure the given board state is valid

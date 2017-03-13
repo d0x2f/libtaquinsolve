@@ -19,6 +19,11 @@ std::queue<Moves> IDASolver::solve(std::vector<uint8_t> board, uint8_t board_siz
     //Since we're starting a new solve, clear the visited cache.
     this->visited_cache.clear();
 
+    //Check if the board size is 4 and load the pattern db if it is.
+    if (board_size == 4) {
+        this->load_pattern_database();
+    }
+
     std::shared_ptr<Board> initial_board = std::shared_ptr<Board>(new Board(board, board_size, this->pattern_database));
 
     //Ensure the given board state is valid

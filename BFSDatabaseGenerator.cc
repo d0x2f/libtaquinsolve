@@ -1,6 +1,7 @@
 #include <queue>
 #include <limits>
 #include <fstream>
+#include <experimental/filesystem>
 
 #include "BFSDatabaseGenerator.hh"
 
@@ -19,6 +20,10 @@ using namespace TaquinSolve;
  */
 void BFSDatabaseGenerator::generate(std::vector<uint8_t> goal_board, std::set<uint8_t> group_tiles, uint8_t board_size, std::string output_file)
 {
+    if (std::experimental::filesystem::exists(output_file)) {
+        return;
+    }
+
     std::queue<std::shared_ptr<Board> > frontier;
 
     std::shared_ptr< std::set<uint8_t> > group_tiles_nozero_ptr = std::shared_ptr< std::set<uint8_t> >(new std::set<uint8_t>(group_tiles));

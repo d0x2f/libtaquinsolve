@@ -21,6 +21,8 @@ namespace TaquinSolve
         protected:
             std::shared_ptr< std::map<uint64_t, uint8_t> > pattern_database = NULL;
 
+            void load_pattern_database();
+
         private:
             void load_database(std::string path);
     };

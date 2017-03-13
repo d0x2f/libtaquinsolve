@@ -39,6 +39,11 @@ Board::Board(
  */
 void Board::validate_state()
 {
+    //Check if the board size is valid (2-4).
+    if (this->board_size < 2 || this->board_size > 4) {
+        throw std::string("Board size invalid.\nThis library only supports board sizes 2-4.");
+    }
+
     //Ensure we have the right number of positions
     if (this->state.size() != this->board_size * this->board_size) {
         throw std::string("Not enough tiles to fill board: ") + std::to_string(this->state.size()) + "/" + std::to_string(this->board_size * this->board_size);
