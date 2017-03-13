@@ -6,8 +6,6 @@ C++ library for solving taquin picture puzzles
     * The board state hash is 8 bytes (64 bits) with each 4 bits representing a position in the puzzle and it's value.
     * The board cost/heuristic is stored in 1 byte (max 255) which seems reasonable (cost max 80, but this uses 7 bits anyway).
     * Generates a set of databases totaling ~100MB or ~10MB when compressed.
-* Make use of the pattern databases for 4x4 puzzles.
-    * Is now being used, but generating non-optimal results.
 * Include a packaged set of databases with the source to be installed in /usr/local/share/libtaquinsolve/ and the windows equivalent.
     * The pattern databases are available in pattern-databases.tar.xz for you to copy if you don't want to generate them.
     * Currently only looks in /usr/local/share/libtaquinsolve/, so this won't work on windows.
