@@ -1,4 +1,7 @@
 # TaquinSolver
+
+[![Build Status](https://travis-ci.org/d0x2f/libtaquinsolve.svg?branch=master)](https://travis-ci.org/d0x2f/libtaquinsolve)
+
 C++ library for solving taquin picture puzzles
 
 ## TODO

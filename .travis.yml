@@ -9,7 +9,7 @@ before_script:
   - autoreconf --force --install
 
 script:
-  - ./configure && make && make check
+  - ./configure && make && make check; cat test/test-suite.log;
 
 matrix:
   include:
