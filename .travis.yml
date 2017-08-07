@@ -3,6 +3,10 @@ language: cpp
 sudo: enabled
 dist: trusty
 
+cache:
+  directories:
+    - /usr/local/share/libtaquinsolve
+
 compiler:
   - gcc
 
