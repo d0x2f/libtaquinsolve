@@ -3,14 +3,12 @@ language: cpp
 sudo: enabled
 dist: trusty
 
-cache:
-  directories:
-    - /usr/local/share/libtaquinsolve
-
 compiler:
   - gcc
 
 before_script:
+  - mkdir /usr/local/share/libtaquinsolve
+  - tar xJvf pattern-databases.tar.xz -C /usr/local/share/libtaquinsolve
   - autoreconf --force --install
 
 script:
