@@ -7,8 +7,8 @@ compiler:
   - gcc
 
 before_script:
-  - mkdir /usr/local/share/libtaquinsolve
-  - tar xJvf pattern-databases.tar.xz -C /usr/local/share/libtaquinsolve
+  - sudo mkdir /usr/local/share/libtaquinsolve
+  - sudo tar xJvf pattern-databases.tar.xz -C /usr/local/share/libtaquinsolve
   - autoreconf --force --install
 
 script:
