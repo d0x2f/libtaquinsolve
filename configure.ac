@@ -26,4 +26,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_CHECK_FUNCS([gettimeofday])
 
+AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_srcdir)/src -iquote \$(srcdir)"
+AC_SUBST([AM_CPPFLAGS])
+
 AC_OUTPUT(Makefile src/Makefile test/Makefile)

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include "taquinsolve.hh"
+#include <taquinsolve.hh>
 
 using namespace TaquinSolve;
 
