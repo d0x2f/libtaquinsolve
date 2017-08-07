@@ -28,12 +28,12 @@ int main (int argc, char **argv)
         ******************************/
         std::cout << "BOARD SIZE 3" << std::endl;
         board_size = 3;
-        /*solvable_count = 0;
+        solvable_count = 0;
         for (uint32_t i=0; i<1000; i++) {
             std::vector<uint8_t> puzzle = taquin_generate_vector(board_size);
             solvable_count += taquin_check_solvable(puzzle, board_size);
         }
-        std::cout << solvable_count << "/1000 generated puzzles solvable" << std::endl;*/
+        std::cout << solvable_count << "/1000 generated puzzles solvable" << std::endl;
 
         solved_puzzle = "1 2 3 4 5 6 7 8 0";
         Board solved(taquin_tokenise_board_string(solved_puzzle), board_size);
@@ -96,5 +96,8 @@ int main (int argc, char **argv)
         std::cout << "Done!" << std::endl;
     } catch (std::string error) {
         std::cout << error << std::endl;
+        return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
 }
