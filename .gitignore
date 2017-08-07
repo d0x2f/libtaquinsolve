@@ -53,4 +53,3 @@ config.status
 configure
 libtool
 test-driver
-test

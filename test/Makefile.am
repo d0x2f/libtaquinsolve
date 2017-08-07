@@ -1,14 +1,14 @@
 LDADD = $(top_srcdir)/src/libtaquinsolve.la
 
-bin_PROGRAMS = test
+check_PROGRAMS = \
+    check-generate-patterndb \
+    check-generate-puzzles \
+    check-solvable-puzzles \
+    check-unsolvable-puzzles \
+    check-solved-puzzles
 
-test_SOURCES = test.cc
+AM_DEFAULT_SOURCE_EXT = .cc
 
-include_HEADERS =   ../src/taquinsolve.hh \
-                    ../src/Board.hh \
-                    ../src/ASolver.hh \
-                    ../src/IDASolver.hh \
-                    ../src/BFSDatabaseGenerator.hh \
-                    ../src/Solver.hh
+include_HEADERS =   ../src/taquinsolve.hh
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
