@@ -43,3 +43,14 @@ c_cpp_properties.json
 autom4te.cache/
 ar-lib
 build/
+Makefile
+*.log
+*.Po
+**/.deps
+**/.libs
+*.trs
+config.status
+configure
+libtool
+test-driver
+test
