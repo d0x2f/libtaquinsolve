@@ -36,7 +36,7 @@ static void test_invalid_3_3_puzzle()
 
 static void test_invalid_4_4_puzzle()
 {
-    std::string invalid_puzzle = "6 11 12 7 10 1 15 8 14 9 13 3 4 0";
+    std::string invalid_puzzle = "6 11 12 7 10 1 15 16 14 9 13 3 4 0";
     Board invalid(taquin_tokenise_board_string(invalid_puzzle), 4);
 
     //Should not be solvable
