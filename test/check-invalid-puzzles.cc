@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string>
-#include <iostream>
 
 #include <taquinsolve.hh>
 
@@ -45,8 +44,8 @@ static void test_invalid_4_4_puzzle()
     //Should have 40 inversions
     assert(taquin_get_inversion_count(invalid.get_state(), 4) == 40);
 
-    //Should have state hash 0x8765321
-    assert(invalid.get_state_hash() == 0x043d9e8f1a7cb6);
+    //Should have (invalid) state hash 0x043d9f0f1a7cb6
+    assert(invalid.get_state_hash() == 0x043d9f0f1a7cb6);
 
     //Should not be solved
     assert(!invalid.check_solved());
@@ -72,7 +71,7 @@ static void test_invalid_1_1_puzzle()
     //Should have 0 inversions
     assert(taquin_get_inversion_count(invalid.get_state(), 1) == 0);
 
-    //Should have state hash 0x8765321
+    //Should have state hash 0x0
     assert(invalid.get_state_hash() == 0x0);
 
     //Should be solved
