@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <experimental/filesystem>
+#include <math.h>
 
 #include "taquinsolve.hh"
 #include "BFSDatabaseGenerator.hh"
@@ -79,6 +80,16 @@ bool taquin_check_solvable(std::string board_string, uint8_t board_size)
  */
 bool taquin_check_solvable(std::vector<uint8_t> board, uint8_t board_size)
 {
+    //Check if we have the right number of tokens.
+    if (board.size() != pow(board_size, 2)) {
+        return false;
+    }
+
+    //Check if the board size is valid (2-4).
+    if (board_size < 2 || board_size > 4) {
+        return false;
+    }
+
     uint8_t len = board_size * board_size;
     uint8_t inversion_count = taquin_get_inversion_count(board, board_size);
     uint8_t zero_position = 0;

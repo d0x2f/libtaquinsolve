@@ -6,7 +6,8 @@ check_PROGRAMS = \
     check-solvable-puzzles \
     check-unsolvable-puzzles \
     check-solved-puzzles \
-    check-random-puzzles
+    check-random-puzzles \
+    check-invalid-puzzles
 
 AM_DEFAULT_SOURCE_EXT = .cc
 

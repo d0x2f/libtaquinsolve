@@ -8,10 +8,9 @@
 using namespace TaquinSolve;
 
 /**
- * Solve the board state given to this object.
- * Uses an Iterative Deepening A* search algorithm.
+ * Generate a pattern database using a breadth-first search.
 
- * @param goal_board    The indented goal board that represents a sovled solution.
+ * @param goal_board    The intended goal board that represents a sovled solution.
  * @param group_tiles   The set of tiles to consider for this database.
  * @param board_size    The size of the game board.
  * @param output_file   The file to write the generated database data to.
@@ -120,7 +119,7 @@ void BFSDatabaseGenerator::database_insert(
  *
  * @param index The key to search for.
  *
- * @return True or False.
+ * @return bool
  */
 bool BFSDatabaseGenerator::check_visited(uint64_t index)
 {
@@ -147,6 +146,8 @@ uint8_t BFSDatabaseGenerator::database_get_value(uint64_t index)
 
 /**
  * Write the completed database to file as binary.
+ *
+ * @param std::string output_file The path to write the database to.
  */
 void BFSDatabaseGenerator::save_database(std::string output_file)
 {
