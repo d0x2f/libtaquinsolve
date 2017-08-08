@@ -42,8 +42,8 @@ static void test_invalid_4_4_puzzle()
     //Should not be solvable
     assert(!taquin_check_solvable(invalid_puzzle, 4));
 
-    //Should have 41 inversions
-    assert(taquin_get_inversion_count(invalid.get_state(), 4) == 41);
+    //Should have 40 inversions
+    assert(taquin_get_inversion_count(invalid.get_state(), 4) == 40);
 
     //Should have state hash 0x8765321
     assert(invalid.get_state_hash() == 0x043d9e8f1a7cb6);
