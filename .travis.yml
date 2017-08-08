@@ -12,10 +12,13 @@ before_script:
   - autoreconf --force --install
 
 script:
-  - ./configure && make && sudo make check
+  - ./configure CXXFLAGS="-fprofile-arcs -ftest-coverage -fPIC -O0" && make && sudo make check
 
 after_failure:
   - cat test/test-suite.log
+
+after_success:
+  - coveralls --exclude test --gcov-options '\-lp'
 
 matrix:
   include:
@@ -31,3 +34,4 @@ matrix:
 
 before_install:
     - eval "${MATRIX_EVAL}"
+    - pip install --user cpp-coveralls
