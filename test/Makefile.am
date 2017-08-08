@@ -5,10 +5,9 @@ check_PROGRAMS = \
     check-generate-puzzles \
     check-solvable-puzzles \
     check-unsolvable-puzzles \
-    check-solved-puzzles
+    check-solved-puzzles \
+    check-random-puzzles
 
 AM_DEFAULT_SOURCE_EXT = .cc
-
-include_HEADERS =   ../src/taquinsolve.hh
 
 TESTS = $(check_PROGRAMS)
