@@ -9,18 +9,10 @@
 #include <functional>
 #include <cstdint>
 
+#include "taquinsolve.hh"
+
 namespace TaquinSolve
 {
-    /**
-     * The set of all possible moves.
-     */
-    enum Moves {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-    };
-
     /**
      * Represents a board state with operations that affect it or describe it.
      */

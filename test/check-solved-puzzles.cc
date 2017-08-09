@@ -3,6 +3,7 @@
 #include <string>
 
 #include <taquinsolve.hh>
+#include <Board.hh>
 
 using namespace TaquinSolve;
 

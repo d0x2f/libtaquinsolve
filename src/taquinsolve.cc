@@ -7,6 +7,7 @@
 
 #include "taquinsolve.hh"
 #include "BFSDatabaseGenerator.hh"
+#include "IDASolver.hh"
 
 /**
  * Generate a solvable puzzle with the given board size.
@@ -157,32 +158,38 @@ std::vector<uint8_t> taquin_tokenise_board_string(std::string str, char sep)
 /**
  * Solve the given puzzle string.
  *
- * @param board_string              A board represented as a string e.g. "3 1 0 2"
- * @param board_size                The size of the given board e.g. 2 for the above example.
- * @param TaquinAlgorithm algorithm  The algorithm to use to solve the puzzle.
+ * @param board_string                      A board represented as a string e.g. "3 1 0 2"
+ * @param board_size                        The size of the given board e.g. 2 for the above example.
+ * @param TaquinSolve::Algorithm algorithm  The algorithm to use to solve the puzzle.
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::string board_string, uint8_t board_size, TaquinAlgorithm algorithm)
-{
+std::queue<TaquinSolve::Moves> taquin_solve(
+    std::string board_string,
+    uint8_t board_size,
+    TaquinSolve::Algorithm algorithm
+) {
     return taquin_solve(taquin_tokenise_board_string(board_string), board_size, algorithm);
 }
 
 /**
  * Solve the given puzzle vector.
  *
- * @param board                     A board represented as a vector.
- * @param board_size                The size of the given board
- * @param TaquinAlgorithm algorithm  The algorithm to use to solve the puzzle.
+ * @param board                             A board represented as a vector.
+ * @param board_size                        The size of the given board
+ * @param TaquinSolve::Algorithm algorithm  The algorithm to use to solve the puzzle.
  *
  * @return A queue of moves taken to reach the solution.
  */
-std::queue<TaquinSolve::Moves> taquin_solve(std::vector<uint8_t> board, uint8_t board_size, TaquinAlgorithm algorithm)
-{
+std::queue<TaquinSolve::Moves> taquin_solve(
+    std::vector<uint8_t> board,
+    uint8_t board_size,
+    TaquinSolve::Algorithm algorithm
+) {
     std::unique_ptr<TaquinSolve::Solver> solver;
 
     switch (algorithm) {
-        case IDA:
+        case TaquinSolve::Algorithm::IDA:
         default:
             solver = std::make_unique<TaquinSolve::IDASolver>();
             break;
